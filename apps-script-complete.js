@@ -45,135 +45,144 @@ function doPost(e) {
       // 9. 출근활동
       data.chapter1?.commuteActivity || '',
 
-      // === Chapter 2: 오전 업무 (8개 필드) ===
+      // === Chapter 2: 오전 업무 (11개 필드) ===
       // 10. 현재도구
       arrayToString(data.chapter2?.currentTools),
 
-      // 11. 유료도구
+      // 11. 도구사용빈도
+      objectToString(data.chapter2?.toolUsageFrequency),
+
+      // 12. 유료도구
       objectToString(data.chapter2?.paidTools),
 
-      // 12. 유료전환이유
+      // 13. 유료전환이유
       arrayToString(data.chapter2?.paymentReasons),
 
-      // 13. 무료고수이유
+      // 14. 무료고수이유
       arrayToString(data.chapter2?.freeReasons),
 
-      // 14. 버린앱
+      // 15. 버린앱
       arrayToString(data.chapter2?.abandonedApps),
 
-      // 15. 포모도로경험
+      // 16. 버린앱이유
+      objectToString(data.chapter2?.abandonReasons),
+
+      // 17. 포모도로경험
       data.chapter2?.pomodoroExperience || '',
 
-      // 16. 포모도로그만둔시간
+      // 18. 포모도로그만둔시간
       data.chapter2?.pomodoroQuitTime || '',
 
-      // 17. 포모도로그만둔이유
+      // 19. 포모도로그만둔이유
       arrayToString(data.chapter2?.pomodoroQuitReasons),
 
+      // 20. 포모도로빈도
+      data.chapter2?.pomodoroFrequency || '',
+
       // === Chapter 3: 오후 집중력 전투 (10개 필드) ===
-      // 18. 완료작업수
+      // 21. 완료작업수
       data.chapter3?.completedTasks || '',
 
-      // 19. 총작업수
+      // 22. 총작업수
       data.chapter3?.totalTasks || '',
 
-      // 20. 에너지레벨
+      // 23. 에너지레벨
       data.chapter3?.energyLevel || '',
 
-      // 21. 불안레벨
+      // 24. 불안레벨
       data.chapter3?.anxietyLevel || '',
 
-      // 22. 폰확인횟수
+      // 25. 폰확인횟수
       data.chapter3?.phoneCheckCount || '',
 
-      // 23. 방해응답
+      // 26. 방해응답
       data.chapter3?.interruptionResponse || '',
 
-      // 24. 어제완료
+      // 27. 어제완료
       data.chapter3?.yesterdayCompleted || '',
 
-      // 25. 어제계획
+      // 28. 어제계획
       data.chapter3?.yesterdayPlanned || '',
 
-      // 26. 실패이유
+      // 29. 실패이유
       arrayToString(data.chapter3?.failureReasons),
 
-      // 27. 도피활동
+      // 30. 도피활동
       arrayToString(data.chapter3?.escapeActivities),
 
       // === Chapter 4: 퇴근 후 반성 (12개 필드) ===
-      // 28. 좌절빈도
+      // 31. 좌절빈도
       data.chapter4?.frustrationFrequency || '',
 
-      // 29. 대처전략
+      // 32. 대처전략
       data.chapter4?.copingStrategy || '',
 
-      // 30. ADHD지출_약
+      // 33. ADHD지출_약
       data.chapter4?.adhdSpending?.medication || '',
 
-      // 31. ADHD지출_상담
+      // 34. ADHD지출_상담
       data.chapter4?.adhdSpending?.therapy || '',
 
-      // 32. ADHD지출_앱
+      // 35. ADHD지출_앱
       data.chapter4?.adhdSpending?.apps || '',
 
-      // 33. ADHD지출_책
+      // 36. ADHD지출_책
       data.chapter4?.adhdSpending?.books || '',
 
-      // 34. ADHD지출_카페
+      // 37. ADHD지출_카페
       data.chapter4?.adhdSpending?.cafe || '',
 
-      // 35. ADHD지출_헤드폰
+      // 38. ADHD지출_헤드폰
       data.chapter4?.adhdSpending?.headphones || '',
 
-      // 36. 가치설명
+      // 39. 가치설명
       data.chapter4?.valueDescription || '',
 
-      // 37. 지불의향
+      // 40. 지불의향
       data.chapter4?.willingToPay || '',
 
-      // 38. 가격의견
+      // 41. 가격의견
       data.chapter4?.priceOpinion || '',
 
-      // 39. 맞춤가격
+      // 42. 맞춤가격
       data.chapter4?.customPrice || '',
 
       // === 베타 신청 (3개 필드) ===
-      // 40. 베타관심
+      // 43. 베타관심
       data.betaSignup?.interested || '',
 
-      // 41. 베타이메일
+      // 44. 베타이메일
       data.betaSignup?.email || '',
 
-      // 42. 베타미관심이유
+      // 45. 베타미관심이유
       data.betaSignup?.notInterestReason || '',
 
       // === 메타데이터 (2개 필드) ===
-      // 43. 신뢰도점수
+      // 46. 신뢰도점수
       data.trustScore || '',
 
-      // 44. 데이터완성도
+      // 47. 데이터완성도
       data.dataCompleteness || '',
 
       // === 행동 데이터 (3개 필드) ===
-      // 45. 씬체류시간
+      // 48. 씬체류시간
       objectToString(data.behavioral?.sceneTimings),
 
-      // 46. 뒤로가기횟수
+      // 49. 뒤로가기횟수
       data.behavioral?.backButtonClicks || 0,
 
-      // 47. 이탈지점
+      // 50. 이탈지점
       data.behavioral?.dropOffPoint || '',
 
       // === 결과 (2개 필드) ===
-      // 48. 사용자타입
+      // 51. 사용자타입
       data.result?.userType || '',
 
-      // 49. 완료시간(분)
+      // 52. 완료시간(분)
       data.result?.completionTime || ''
     ];
 
-    // 총 49개 필드 확인
+    // 총 52개 필드 확인
     Logger.log('Row 배열 길이: ' + row.length);
 
     sheet.appendRow(row);
@@ -219,13 +228,16 @@ function testPost() {
 
     chapter2: {
       currentTools: ['Notion', 'Todoist'],
+      toolUsageFrequency: { 'Notion': 'daily', 'Todoist': 'sometimes' },
       paidTools: { 'Notion': 5000, 'Todoist': 3000 },
       paymentReasons: ['더 많은 기능'],
       freeReasons: undefined,
       abandonedApps: ['Asana'],
+      abandonReasons: { 'Asana': ['너무 복잡함'] },
       pomodoroExperience: 'tried_quit',
       pomodoroQuitTime: 15,
-      pomodoroQuitReasons: ['너무 짧음']
+      pomodoroQuitReasons: ['너무 짧음'],
+      pomodoroFrequency: 3
     },
 
     chapter3: {
