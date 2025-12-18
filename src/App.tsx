@@ -84,12 +84,14 @@ function App() {
 
   // 씬 변경 시 추적
   useEffect(() => {
-    if (consented) {
-      analytics.startScene(SCENES[currentSceneIndex].id);
+    const currentScene = SCENES[currentSceneIndex];
+
+    if (consented && currentScene) {
+      analytics.startScene(currentScene.id);
     }
 
     return () => {
-      if (consented) {
+      if (consented && currentScene) {
         const duration = analytics.endScene();
         setSurveyData(prev => ({
           ...prev,
@@ -97,7 +99,7 @@ function App() {
             ...prev.behavioral,
             sceneTimings: {
               ...prev.behavioral.sceneTimings,
-              [SCENES[currentSceneIndex].id]: duration
+              [currentScene.id]: duration
             }
           }
         }));
