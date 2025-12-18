@@ -89,6 +89,10 @@ export interface SurveyData {
     backButtonClicks: number;
     dropOffPoint?: string;
   };
+
+  // 메타데이터 (분석용)
+  trustScore?: number; // 0-100
+  dataCompleteness?: number; // 0-100
 }
 
 export type Scene = {

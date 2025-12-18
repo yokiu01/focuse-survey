@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { SurveyData, UserTypeResult } from '../types';
 import { analyzeUserType, getRecommendations } from '../utils/typeAnalyzer';
+import { submitToGoogleSheets, calculateDataCompleteness, calculateTrustScore } from '../utils/googleSheets';
 import './ResultPage.css';
 
 interface ResultPageProps {
@@ -12,6 +13,7 @@ export const ResultPage: React.FC<ResultPageProps> = ({ data, onRestart }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [result, setResult] = useState<UserTypeResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     try {
@@ -24,6 +26,35 @@ export const ResultPage: React.FC<ResultPageProps> = ({ data, onRestart }) => {
       setError(err instanceof Error ? err.message : 'Unknown error');
     }
   }, [data]);
+
+  // Google Sheets로 데이터 전송 (한 번만 실행)
+  useEffect(() => {
+    if (result && !submitted) {
+      const submitData = async () => {
+        // 신뢰도 점수와 데이터 완성도 계산
+        const trustScore = calculateTrustScore(data);
+        const dataCompleteness = calculateDataCompleteness(data);
+
+        const enrichedData: SurveyData = {
+          ...data,
+          trustScore,
+          dataCompleteness
+        };
+
+        console.log('데이터 전송 시작...', { trustScore, dataCompleteness });
+        const response = await submitToGoogleSheets(enrichedData);
+
+        if (response.success) {
+          console.log('✅ Google Sheets 전송 성공');
+          setSubmitted(true);
+        } else {
+          console.error('❌ Google Sheets 전송 실패:', response.error);
+        }
+      };
+
+      submitData();
+    }
+  }, [result, data, submitted]);
 
   if (error) {
     return (

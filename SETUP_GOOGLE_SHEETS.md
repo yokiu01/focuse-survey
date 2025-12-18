@@ -126,7 +126,7 @@ function doGet(e) {
 
 ## ⚙️ 프론트엔드 설정
 
-### `.env` 파일 생성
+### 로컬 개발 환경
 
 프로젝트 루트에 `.env` 파일 생성:
 
@@ -135,6 +135,31 @@ VITE_GOOGLE_SHEETS_URL=https://script.google.com/macros/s/AKfycbxxx.../exec
 ```
 
 위에서 복사한 웹 앱 URL을 붙여넣으세요!
+
+### Vercel 배포 환경 설정
+
+1. **Vercel 대시보드 접속**
+   - https://vercel.com/dashboard
+   - 배포한 프로젝트 선택
+
+2. **환경 변수 추가**
+   - **Settings** → **Environment Variables** 클릭
+   - 새 환경 변수 추가:
+     - **Name**: `VITE_GOOGLE_SHEETS_URL`
+     - **Value**: `https://script.google.com/macros/s/AKfycbxxx.../exec` (위에서 복사한 URL)
+     - **Environment**: Production, Preview, Development 모두 선택
+   - **Save** 클릭
+
+3. **재배포**
+   - **Deployments** 탭으로 이동
+   - 가장 최근 배포 옆 **⋮** 클릭 → **Redeploy** 선택
+   - 또는 GitHub에 커밋하면 자동으로 재배포됩니다
+
+```bash
+git add .
+git commit -m "Add Google Sheets integration"
+git push
+```
 
 ---
 
