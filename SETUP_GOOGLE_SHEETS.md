@@ -15,7 +15,7 @@
 **첫 번째 행 (헤더)에 다음 입력:**
 
 ```
-세션ID | 시작시간 | 완료시간 | 기기 | 진행률 | 아침불안도 | 계획도구 | 도구이름 | 사용기간 | 월비용 | 불편한점 | 미사용이유 | 의사결정시간 | 집중도구사용 | 집중도구목록 | 그만둔이유 | 방해요소 | 실제완료 | 계획작업 | 완료율 | AI수용도 | AI선호이유 | AI거부이유 | 가치항목 | 가치기타 | 현재지출_약 | 현재지출_상담 | 현재지출_앱 | 지불의향 | 신뢰도점수 | 데이터완성도 | 베타이메일 | 이탈지점
+제출시간 | 세션ID | 시작시간 | 기기타입 | 진행률 | 아침루틴 | 할일개수 | 우선순위결정 | 우선순위시간(초) | 출근활동 | 현재도구 | 유료도구 | 유료전환이유 | 무료고수이유 | 버린앱 | 포모도로경험 | 포모도로그만둔시간 | 포모도로그만둔이유 | 완료작업수 | 총작업수 | 에너지레벨 | 불안레벨 | 폰확인횟수 | 방해응답 | 어제완료 | 어제계획 | 실패이유 | 도피활동 | 좌절빈도 | 대처전략 | ADHD지출_약 | ADHD지출_상담 | ADHD지출_앱 | ADHD지출_책 | ADHD지출_카페 | ADHD지출_헤드폰 | 가치설명 | 지불의향 | 가격의견 | 맞춤가격 | 베타관심 | 베타이메일 | 베타미관심이유 | 신뢰도점수 | 데이터완성도 | 씬체류시간 | 뒤로가기횟수 | 이탈지점 | 사용자타입 | 완료시간(분)
 ```
 
 ### 3️⃣ Apps Script 설정
@@ -29,51 +29,80 @@ function doPost(e) {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('응답데이터');
     const data = JSON.parse(e.postData.contents);
 
+    // 배열을 문자열로 변환하는 헬퍼 함수
+    const arrayToString = (arr) => Array.isArray(arr) ? arr.join(', ') : '';
+
+    // 객체를 JSON 문자열로 변환하는 헬퍼 함수
+    const objectToString = (obj) => obj ? JSON.stringify(obj) : '';
+
     // 데이터 행 구성
     const row = [
+      new Date(data.lastUpdated || Date.now()), // 제출시간
       data.sessionId || '',
       new Date(data.startTime || Date.now()),
-      new Date(data.lastUpdated || Date.now()),
       data.deviceType || '',
       data.progress || 0,
 
-      // Act 1
-      data.act1?.morningAnxiety || '',
-      data.act1?.planningTool || '',
-      data.act1?.customToolName || '',
-      data.act1?.toolUsageDuration || '',
-      data.act1?.toolMonthlyFee || '',
-      data.act1?.toolPainPoints?.join(', ') || '',
-      data.act1?.noAppReason || '',
-      data.act1?.prioritizationTime || '',
+      // Chapter 1: 아침의 혼돈
+      data.chapter1?.morningRoutine || '',
+      data.chapter1?.todoCount || '',
+      data.chapter1?.priorityDecision || '',
+      data.chapter1?.priorityDecisionTime || '',
+      data.chapter1?.commuteActivity || '',
 
-      // Act 2
-      data.act2?.usedFocusTools || '',
-      data.act2?.focusToolsList?.join(', ') || '',
-      data.act2?.quitReason || '',
-      data.act2?.mainDistractions?.join(', ') || '',
+      // Chapter 2: 오전 업무 (도구 탐색)
+      arrayToString(data.chapter2?.currentTools),
+      objectToString(data.chapter2?.paidTools),
+      arrayToString(data.chapter2?.paymentReasons),
+      arrayToString(data.chapter2?.freeReasons),
+      arrayToString(data.chapter2?.abandonedApps),
+      data.chapter2?.pomodoroExperience || '',
+      data.chapter2?.pomodoroQuitTime || '',
+      arrayToString(data.chapter2?.pomodoroQuitReasons),
 
-      // Act 3
-      data.act3?.actualCompleted || '',
-      data.act3?.plannedTasks || '',
-      data.act3?.completionRate || '',
-      data.act3?.aiSuggestionScore || '',
-      data.act3?.aiLikeReason || '',
-      data.act3?.aiDislikeReason || '',
+      // Chapter 3: 오후 집중력 전투
+      data.chapter3?.completedTasks || '',
+      data.chapter3?.totalTasks || '',
+      data.chapter3?.energyLevel || '',
+      data.chapter3?.anxietyLevel || '',
+      data.chapter3?.phoneCheckCount || '',
+      data.chapter3?.interruptionResponse || '',
+      data.chapter3?.yesterdayCompleted || '',
+      data.chapter3?.yesterdayPlanned || '',
+      arrayToString(data.chapter3?.failureReasons),
+      arrayToString(data.chapter3?.escapeActivities),
 
-      // Act 4
-      data.act4?.valueGained?.join(', ') || '',
-      data.act4?.valueOther || '',
-      data.act4?.currentSpending?.medication || '',
-      data.act4?.currentSpending?.therapy || '',
-      data.act4?.currentSpending?.apps || '',
-      data.act4?.willingnessToPay || '',
+      // Chapter 4: 퇴근 후 반성 (지불 의향)
+      data.chapter4?.frustrationFrequency || '',
+      data.chapter4?.copingStrategy || '',
+      data.chapter4?.adhdSpending?.medication || '',
+      data.chapter4?.adhdSpending?.therapy || '',
+      data.chapter4?.adhdSpending?.apps || '',
+      data.chapter4?.adhdSpending?.books || '',
+      data.chapter4?.adhdSpending?.cafe || '',
+      data.chapter4?.adhdSpending?.headphones || '',
+      data.chapter4?.valueDescription || '',
+      data.chapter4?.willingToPay || '',
+      data.chapter4?.priceOpinion || '',
+      data.chapter4?.customPrice || '',
+
+      // 베타 신청
+      data.betaSignup?.interested || '',
+      data.betaSignup?.email || '',
+      data.betaSignup?.notInterestReason || '',
 
       // 메타데이터
       data.trustScore || '',
       data.dataCompleteness || '',
-      data.betaSignup?.email || '',
-      data.behavioral?.dropOffPoint || ''
+
+      // 행동 데이터
+      objectToString(data.behavioral?.sceneTimings),
+      data.behavioral?.backButtonClicks || 0,
+      data.behavioral?.dropOffPoint || '',
+
+      // 결과
+      data.result?.userType || '',
+      data.result?.completionTime || ''
     ];
 
     sheet.appendRow(row);
@@ -84,6 +113,7 @@ function doPost(e) {
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
+    Logger.log('Error: ' + error.toString());
     return ContentService.createTextOutput(JSON.stringify({
       status: 'error',
       message: error.toString()
@@ -170,14 +200,60 @@ git push
 ```javascript
 function testPost() {
   const testData = {
-    sessionId: 'test_123',
+    sessionId: 'test_' + Date.now(),
     startTime: Date.now(),
+    lastUpdated: Date.now(),
     deviceType: 'desktop',
     progress: 100,
-    act1: {
-      morningAnxiety: 50,
-      planningTool: 'notion'
-    }
+
+    chapter1: {
+      morningRoutine: 'snooze_3times',
+      todoCount: 15,
+      priorityDecision: 'random',
+      priorityDecisionTime: 120,
+      commuteActivity: 'sns'
+    },
+
+    chapter2: {
+      currentTools: ['Notion', 'Todoist'],
+      paidTools: { 'Notion': 5000, 'Todoist': 3000 },
+      pomodoroExperience: 'tried_quit'
+    },
+
+    chapter3: {
+      completedTasks: 3,
+      totalTasks: 10,
+      energyLevel: 50,
+      anxietyLevel: 70
+    },
+
+    chapter4: {
+      frustrationFrequency: 'daily',
+      copingStrategy: 'self_blame',
+      adhdSpending: {
+        medication: 50000,
+        therapy: 100000
+      },
+      willingToPay: 10000
+    },
+
+    betaSignup: {
+      interested: true,
+      email: 'test@example.com'
+    },
+
+    behavioral: {
+      sceneTimings: { 'ch1-s1': 10, 'ch1-s2': 5 },
+      backButtonClicks: 2
+    },
+
+    result: {
+      userType: 'focus_survivor',
+      completionTime: 15.5
+    },
+
+    trustScore: 85,
+    dataCompleteness: 90
   };
 
   const result = doPost({
@@ -193,7 +269,8 @@ function testPost() {
 1. 위 코드를 Apps Script에 추가
 2. **testPost** 함수 선택
 3. **실행** 클릭
-4. Google Sheets로 돌아가서 데이터 확인!
+4. **보기 > 로그** 에서 결과 확인
+5. Google Sheets로 돌아가서 데이터 행이 추가되었는지 확인!
 
 ---
 
