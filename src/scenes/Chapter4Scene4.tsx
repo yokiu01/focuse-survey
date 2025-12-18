@@ -30,6 +30,8 @@ export const Chapter4Scene4: React.FC<SceneProps> = ({ data, onNext }) => {
   };
 
   const handleNext = () => {
+    console.log('[Chapter4Scene4] handleNext 호출됨', { interested, email, notInterestReason });
+
     const updates: any = {
       betaSignup: {
         interested,
@@ -39,7 +41,9 @@ export const Chapter4Scene4: React.FC<SceneProps> = ({ data, onNext }) => {
       }
     };
 
+    console.log('[Chapter4Scene4] onNext 호출 전', updates);
     onNext(updates);
+    console.log('[Chapter4Scene4] onNext 호출 완료');
   };
 
   const isValidEmail = (email: string) => {

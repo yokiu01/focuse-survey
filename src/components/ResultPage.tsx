@@ -16,13 +16,15 @@ export const ResultPage: React.FC<ResultPageProps> = ({ data, onRestart }) => {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
+    console.log('[ResultPage] 컴포넌트 마운트됨');
+    console.log('[ResultPage] data 받음:', data);
+
     try {
-      console.log('ResultPage - data received:', data);
       const analysisResult = analyzeUserType(data);
-      console.log('ResultPage - analysis result:', analysisResult);
+      console.log('[ResultPage] 분석 완료:', analysisResult);
       setResult(analysisResult);
     } catch (err) {
-      console.error('ResultPage - error:', err);
+      console.error('[ResultPage] 분석 에러:', err);
       setError(err instanceof Error ? err.message : 'Unknown error');
     }
   }, [data]);
@@ -30,25 +32,32 @@ export const ResultPage: React.FC<ResultPageProps> = ({ data, onRestart }) => {
   // Google Sheets로 데이터 전송 (한 번만 실행)
   useEffect(() => {
     if (result && !submitted) {
+      console.log('[ResultPage] Google Sheets 전송 시작');
+
       const submitData = async () => {
-        // 신뢰도 점수와 데이터 완성도 계산
-        const trustScore = calculateTrustScore(data);
-        const dataCompleteness = calculateDataCompleteness(data);
+        try {
+          // 신뢰도 점수와 데이터 완성도 계산
+          const trustScore = calculateTrustScore(data);
+          const dataCompleteness = calculateDataCompleteness(data);
 
-        const enrichedData: SurveyData = {
-          ...data,
-          trustScore,
-          dataCompleteness
-        };
+          console.log('[ResultPage] 메타데이터 계산 완료:', { trustScore, dataCompleteness });
 
-        console.log('데이터 전송 시작...', { trustScore, dataCompleteness });
-        const response = await submitToGoogleSheets(enrichedData);
+          const enrichedData: SurveyData = {
+            ...data,
+            trustScore,
+            dataCompleteness
+          };
 
-        if (response.success) {
-          console.log('✅ Google Sheets 전송 성공');
-          setSubmitted(true);
-        } else {
-          console.error('❌ Google Sheets 전송 실패:', response.error);
+          const response = await submitToGoogleSheets(enrichedData);
+
+          if (response.success) {
+            console.log('[ResultPage] ✅ Google Sheets 전송 성공');
+            setSubmitted(true);
+          } else {
+            console.error('[ResultPage] ❌ Google Sheets 전송 실패:', response.error);
+          }
+        } catch (err) {
+          console.error('[ResultPage] Google Sheets 전송 중 예외 발생:', err);
         }
       };
 

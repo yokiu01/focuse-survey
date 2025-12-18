@@ -114,6 +114,8 @@ function App() {
   };
 
   const handleNext = (updates: Partial<SurveyData>) => {
+    console.log('[App] handleNext 호출됨', { currentSceneIndex, updates });
+
     setSurveyData(prev => {
       const updated = {
         ...prev,
@@ -122,10 +124,15 @@ function App() {
         progress: Math.round(((currentSceneIndex + 1) / SCENES.length) * 100),
         lastUpdated: Date.now()
       };
+      console.log('[App] 데이터 업데이트됨', updated);
       return updated;
     });
 
-    setCurrentSceneIndex(prev => prev + 1);
+    setCurrentSceneIndex(prev => {
+      const newIndex = prev + 1;
+      console.log('[App] 씬 인덱스 변경:', prev, '->', newIndex);
+      return newIndex;
+    });
   };
 
   const handleBack = () => {
@@ -152,6 +159,7 @@ function App() {
 
   // 완료 화면 - 결과 페이지
   if (!currentScene) {
+    console.log('[App] 결과 페이지로 전환', { currentSceneIndex, totalScenes: SCENES.length });
     const completionTime = (Date.now() - surveyData.startTime) / 1000 / 60;
     const updatedData: SurveyData = {
       ...surveyData,
@@ -160,6 +168,7 @@ function App() {
         completionTime
       }
     };
+    console.log('[App] 결과 페이지 데이터:', updatedData);
 
     return <ResultPage data={updatedData} onRestart={handleRestart} />;
   }
