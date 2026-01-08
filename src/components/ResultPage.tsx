@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { SurveyData, UserTypeResult } from '../types';
 import { analyzeUserType, getRecommendations } from '../utils/typeAnalyzer';
 import { submitToGoogleSheets, calculateDataCompleteness, calculateTrustScore } from '../utils/googleSheets';
@@ -13,7 +13,7 @@ export const ResultPage: React.FC<ResultPageProps> = ({ data, onRestart }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [result, setResult] = useState<UserTypeResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [submitted, setSubmitted] = useState(false);
+  const isSubmitting = useRef(false); // 중복 제출 방지용 ref
 
   useEffect(() => {
     console.log('[ResultPage] 컴포넌트 마운트됨');
@@ -31,7 +31,8 @@ export const ResultPage: React.FC<ResultPageProps> = ({ data, onRestart }) => {
 
   // Google Sheets로 데이터 전송 (한 번만 실행)
   useEffect(() => {
-    if (result && !submitted) {
+    if (result && !isSubmitting.current) {
+      isSubmitting.current = true; // 즉시 플래그 설정 (동기적)
       console.log('[ResultPage] Google Sheets 전송 시작');
 
       const submitData = async () => {
@@ -52,18 +53,19 @@ export const ResultPage: React.FC<ResultPageProps> = ({ data, onRestart }) => {
 
           if (response.success) {
             console.log('[ResultPage] ✅ Google Sheets 전송 성공');
-            setSubmitted(true);
           } else {
             console.error('[ResultPage] ❌ Google Sheets 전송 실패:', response.error);
+            isSubmitting.current = false; // 실패 시 재시도 허용
           }
         } catch (err) {
           console.error('[ResultPage] Google Sheets 전송 중 예외 발생:', err);
+          isSubmitting.current = false; // 에러 시 재시도 허용
         }
       };
 
       submitData();
     }
-  }, [result, data, submitted]);
+  }, [result, data]);
 
   if (error) {
     return (
