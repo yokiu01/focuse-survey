@@ -135,6 +135,9 @@ function App() {
       console.log('[App] 씬 인덱스 변경:', prev, '->', newIndex);
       return newIndex;
     });
+
+    // 부드럽게 페이지 맨 위로 스크롤
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBack = () => {
