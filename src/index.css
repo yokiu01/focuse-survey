@@ -1,46 +1,96 @@
-/* Modern Design System - 모던 미니멀 디자인 */
+/* ========================================
+   WARM PRODUCTIVITY - Design System
+   A human-centered, warm aesthetic for ADHD survey
+   ======================================== */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap');
 
 :root {
-  /* Colors */
-  --color-primary: #0066FF;
-  --color-primary-hover: #0052CC;
-  --color-primary-light: #E6F0FF;
+  /* ===== Color Palette ===== */
+  /* Primary - Warm Coral */
+  --color-primary: #FF6B5B;
+  --color-primary-hover: #E85A4A;
+  --color-primary-light: #FFF0EE;
+  --color-primary-dark: #CC4D3F;
 
-  --color-background: #FFFFFF;
-  --color-surface: #F8F9FA;
-  --color-border: #E5E7EB;
+  /* Secondary - Deep Teal */
+  --color-secondary: #2D6A6A;
+  --color-secondary-light: #E8F4F4;
 
-  --color-text: #1A1A1A;
-  --color-text-secondary: #6B7280;
-  --color-text-muted: #9CA3AF;
+  /* Accent - Warm Yellow */
+  --color-accent: #FFB347;
+  --color-accent-light: #FFF4E6;
 
-  --color-success: #10B981;
-  --color-warning: #F59E0B;
-  --color-error: #EF4444;
+  /* Backgrounds - Warm tones */
+  --color-background: #FFFCF9;
+  --color-surface: #FFF8F3;
+  --color-surface-elevated: #FFFFFF;
 
-  /* Spacing */
+  /* Borders */
+  --color-border: #E8DDD5;
+  --color-border-light: #F0E8E2;
+
+  /* Text */
+  --color-text: #2C2420;
+  --color-text-secondary: #6B5E55;
+  --color-text-muted: #9E918A;
+  --color-text-inverse: #FFFCF9;
+
+  /* Semantic Colors */
+  --color-success: #4CAF7C;
+  --color-success-light: #E8F5EC;
+  --color-warning: #FFB347;
+  --color-warning-light: #FFF4E6;
+  --color-error: #E85A4A;
+  --color-error-light: #FFF0EE;
+
+  /* ===== Spacing Scale ===== */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
   --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
 
-  /* Border Radius */
-  --radius-sm: 6px;
+  /* ===== Border Radius ===== */
+  --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 9999px;
 
-  /* Shadows - subtle만 사용 */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  /* ===== Shadows - Warm tinted ===== */
+  --shadow-sm: 0 2px 4px rgba(44, 36, 32, 0.04);
+  --shadow-md: 0 4px 12px rgba(44, 36, 32, 0.08);
+  --shadow-lg: 0 8px 24px rgba(44, 36, 32, 0.12);
+  --shadow-xl: 0 16px 48px rgba(44, 36, 32, 0.16);
+  --shadow-glow: 0 0 40px rgba(255, 107, 91, 0.2);
 
-  /* Typography */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  line-height: 1.5;
+  /* ===== Typography ===== */
+  --font-primary: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-display: 'Dela Gothic One', 'Pretendard Variable', sans-serif;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+  --font-size-4xl: 2.5rem;
+  --font-size-5xl: 3rem;
+
+  /* ===== Transitions ===== */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+  --transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Apply base styles */
+  font-family: var(--font-primary);
+  line-height: 1.6;
   font-weight: 400;
 
   color-scheme: light;
@@ -53,37 +103,201 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
+/* ===== Reset & Base ===== */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  margin: 0;
   min-height: 100vh;
   background-color: var(--color-surface);
+  overflow-x: hidden;
+}
+
+/* Texture overlay for warmth */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.015;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
 }
 
 button {
   font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
 }
 
-/* Scrollbar 스타일 - 미니멀하게 */
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* ===== Scrollbar ===== */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--color-surface);
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-border);
   border-radius: var(--radius-full);
+  border: 2px solid var(--color-surface);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-muted);
+}
+
+/* ===== Selection ===== */
+::selection {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+/* ===== Focus States ===== */
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ===== Utility Classes ===== */
+.fade-in {
+  animation: fadeIn var(--transition-base) ease-out;
+}
+
+.fade-in-up {
+  animation: fadeInUp var(--transition-slow) ease-out;
+}
+
+.scale-in {
+  animation: scaleIn var(--transition-bounce);
+}
+
+/* ===== Typography Helpers ===== */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

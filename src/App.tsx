@@ -6,50 +6,51 @@ import { PrivacyConsent } from './components/PrivacyConsent';
 import { ProgressBar } from './components/ProgressBar';
 import { ResultPage } from './components/ResultPage';
 
-// Scene imports
+// Scene imports (v2 구조)
+import { IntroScene } from './scenes/IntroScene';
 import { Chapter1Scene1 } from './scenes/Chapter1Scene1';
 import { Chapter1Scene2 } from './scenes/Chapter1Scene2';
 import { Chapter1Scene3 } from './scenes/Chapter1Scene3';
 import { Chapter1Scene4 } from './scenes/Chapter1Scene4';
+import { Chapter1Scene5 } from './scenes/Chapter1Scene5';
 import { Chapter2Scene1 } from './scenes/Chapter2Scene1';
 import { Chapter2Scene2 } from './scenes/Chapter2Scene2';
 import { Chapter2Scene3 } from './scenes/Chapter2Scene3';
-import { Chapter2Scene4 } from './scenes/Chapter2Scene4';
 import { Chapter3Scene1 } from './scenes/Chapter3Scene1';
 import { Chapter3Scene2 } from './scenes/Chapter3Scene2';
 import { Chapter3Scene3 } from './scenes/Chapter3Scene3';
 import { Chapter3Scene4 } from './scenes/Chapter3Scene4';
-import { Chapter4Scene1 } from './scenes/Chapter4Scene1';
-import { Chapter4Scene2 } from './scenes/Chapter4Scene2';
-import { Chapter4Scene3 } from './scenes/Chapter4Scene3';
-import { Chapter4Scene4 } from './scenes/Chapter4Scene4';
+import { OutroScene1 } from './scenes/OutroScene1';
+import { OutroScene2 } from './scenes/OutroScene2';
 
 import './App.css';
 
+// v2 설문 구조: 14개 질문, 7-10분 예상
 const SCENES: Scene[] = [
-  // Chapter 1: 아침의 혼돈
-  { id: 'ch1-s1', chapter: 1, title: '알람이 울린다', component: Chapter1Scene1 },
-  { id: 'ch1-s2', chapter: 1, title: '할 일 목록', component: Chapter1Scene2 },
-  { id: 'ch1-s3', chapter: 1, title: '우선순위의 지옥', component: Chapter1Scene3 },
-  { id: 'ch1-s4', chapter: 1, title: '출근길', component: Chapter1Scene4 },
+  // Intro: 몰입 유도 (Q1)
+  { id: 'intro', chapter: 0, title: '아침 알람', component: IntroScene },
 
-  // Chapter 2: 오전 업무
-  { id: 'ch2-s1', chapter: 2, title: '도구의 무덤', component: Chapter2Scene1 },
-  { id: 'ch2-s2', chapter: 2, title: '유료 결제', component: Chapter2Scene2 },
-  { id: 'ch2-s3', chapter: 2, title: '과거의 무덤', component: Chapter2Scene3 },
-  { id: 'ch2-s4', chapter: 2, title: '25분의 저주', component: Chapter2Scene4 },
+  // Chapter 1: 도구 사용 패턴 (Q2-Q6)
+  { id: 'ch1-q2', chapter: 1, title: '현재 도구', component: Chapter1Scene1 },
+  { id: 'ch1-q3', chapter: 1, title: '사용 빈도', component: Chapter1Scene2 },
+  { id: 'ch1-q4', chapter: 1, title: '버린 도구', component: Chapter1Scene3 },
+  { id: 'ch1-q5', chapter: 1, title: '포기 이유', component: Chapter1Scene4 },
+  { id: 'ch1-q6', chapter: 1, title: '현재 지출', component: Chapter1Scene5 },
 
-  // Chapter 3: 오후 집중력 전투
-  { id: 'ch3-s1', chapter: 3, title: '오후 2시의 위기', component: Chapter3Scene1 },
-  { id: 'ch3-s2', chapter: 3, title: '방해의 파도', component: Chapter3Scene2 },
-  { id: 'ch3-s3', chapter: 3, title: '어제의 당신', component: Chapter3Scene3 },
-  { id: 'ch3-s4', chapter: 3, title: '도피의 유혹', component: Chapter3Scene4 },
+  // Chapter 2: 실행 패턴 (Q7-Q9)
+  { id: 'ch2-q7', chapter: 2, title: '어제 실행률', component: Chapter2Scene1 },
+  { id: 'ch2-q8', chapter: 2, title: '실패 빈도', component: Chapter2Scene2 },
+  { id: 'ch2-q9', chapter: 2, title: '실패 원인', component: Chapter2Scene3 },
 
-  // Chapter 4: 퇴근 후 반성
-  { id: 'ch4-s1', chapter: 4, title: '오늘의 성적표', component: Chapter4Scene1 },
-  { id: 'ch4-s2', chapter: 4, title: '돈과 시간의 투자', component: Chapter4Scene2 },
-  { id: 'ch4-s3', chapter: 4, title: '만약의 제안', component: Chapter4Scene3 },
-  { id: 'ch4-s4', chapter: 4, title: '베타 테스터 모집', component: Chapter4Scene4 },
+  // Chapter 3: 솔루션 반응 (Q10-Q13) - 핵심
+  { id: 'ch3-q10', chapter: 3, title: '페인포인트', component: Chapter3Scene1 },
+  { id: 'ch3-q11', chapter: 3, title: '솔루션 제시', component: Chapter3Scene2 },
+  { id: 'ch3-q12', chapter: 3, title: '가격 검증', component: Chapter3Scene3 },
+  { id: 'ch3-q13', chapter: 3, title: '가격 탐색', component: Chapter3Scene4 },
+
+  // Outro: 베타 신청 (Q14-Q15)
+  { id: 'outro-q14', chapter: 4, title: '베타 신청', component: OutroScene1 },
+  { id: 'outro-q15', chapter: 4, title: '피드백', component: OutroScene2 },
 ];
 
 function App() {
@@ -113,30 +114,32 @@ function App() {
       ...prev,
       startTime: Date.now()
     }));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNext = (updates: Partial<SurveyData>) => {
-    console.log('[App] handleNext 호출됨', { currentSceneIndex, updates });
-
     setSurveyData(prev => {
       const updated = {
         ...prev,
         ...updates,
+        // 중첩 객체 머지
+        intro: { ...prev.intro, ...updates.intro },
+        tools: { ...prev.tools, ...updates.tools },
+        spending: { ...prev.spending, ...updates.spending },
+        execution: { ...prev.execution, ...updates.execution },
+        painPoint: { ...prev.painPoint, ...updates.painPoint },
+        solution: { ...prev.solution, ...updates.solution },
+        pricing: { ...prev.pricing, ...updates.pricing },
+        betaSignup: { ...prev.betaSignup, ...updates.betaSignup },
+        feedback: { ...prev.feedback, ...updates.feedback },
         currentScene: currentSceneIndex + 1,
         progress: Math.round(((currentSceneIndex + 1) / SCENES.length) * 100),
         lastUpdated: Date.now()
       };
-      console.log('[App] 데이터 업데이트됨', updated);
       return updated;
     });
 
-    setCurrentSceneIndex(prev => {
-      const newIndex = prev + 1;
-      console.log('[App] 씬 인덱스 변경:', prev, '->', newIndex);
-      return newIndex;
-    });
-
-    // 부드럽게 페이지 맨 위로 스크롤
+    setCurrentSceneIndex(prev => prev + 1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -164,7 +167,6 @@ function App() {
 
   // 완료 화면 - 결과 페이지
   if (!currentScene) {
-    console.log('[App] 결과 페이지로 전환', { currentSceneIndex, totalScenes: SCENES.length });
     const completionTime = (Date.now() - surveyData.startTime) / 1000 / 60;
     const updatedData: SurveyData = {
       ...surveyData,
@@ -173,13 +175,12 @@ function App() {
         completionTime
       }
     };
-    console.log('[App] 결과 페이지 데이터:', updatedData);
 
     return <ResultPage data={updatedData} onRestart={handleRestart} />;
   }
 
   const SceneComponent = currentScene.component;
-  const estimatedTimeLeft = Math.max(0, Math.ceil((SCENES.length - currentSceneIndex) * 1));
+  const estimatedTimeLeft = Math.max(0, Math.ceil((SCENES.length - currentSceneIndex) * 0.5));
 
   return (
     <div className="app-container">

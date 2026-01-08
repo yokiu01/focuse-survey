@@ -1,6 +1,6 @@
 import { SurveyData } from '../types';
 
-const STORAGE_KEY = 'adhd_survey_data';
+const STORAGE_KEY = 'executeai_survey_v2';
 const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7일
 
 export const storage = {
@@ -52,20 +52,24 @@ export const storage = {
   }
 };
 
-// 초기 데이터 생성
+// 초기 데이터 생성 (v2 구조)
 export const createInitialData = (): SurveyData => ({
   userId: storage.generateSessionId(),
   sessionId: storage.generateSessionId(),
   startTime: Date.now(),
   lastUpdated: Date.now(),
   deviceType: /mobile|android|iphone|ipad/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
-  currentChapter: 1,
   currentScene: 0,
   progress: 0,
-  chapter1: {},
-  chapter2: {},
-  chapter3: {},
-  chapter4: {},
+  intro: {},
+  tools: {},
+  spending: {},
+  execution: {},
+  painPoint: {},
+  solution: {},
+  pricing: {},
+  betaSignup: {},
+  feedback: {},
   behavioral: {
     sceneTimings: {},
     backButtonClicks: 0

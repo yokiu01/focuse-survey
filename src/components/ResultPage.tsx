@@ -182,7 +182,7 @@ export const ResultPage: React.FC<ResultPageProps> = ({ data, onRestart }) => {
         )}
 
         {/* 베타 신청 감사 메시지 */}
-        {data.betaSignup?.interested && (
+        {data.betaSignup?.email && !data.betaSignup?.skipped && (
           <div className="beta-thank-you">
             <h2 className="thank-you-title">진심으로 감사드립니다 🙏</h2>
             <div className="thank-you-divider"></div>
@@ -227,16 +227,19 @@ export const ResultPage: React.FC<ResultPageProps> = ({ data, onRestart }) => {
         )}
 
         {/* 제안 CTA */}
-        {!data.betaSignup?.interested && (
+        {(!data.betaSignup?.email || data.betaSignup?.skipped) && (
           <div className="final-cta">
             <h3>🚀 이런 서비스를 만들고 있어요</h3>
             <p>
               AI가 당신의 할 일을 분석하고<br />
               우선순위를 자동으로 정리해주는 서비스
             </p>
-            {data.chapter4.willingToPay !== undefined && data.chapter4.willingToPay > 0 && (
+            <p className="launch-info">
+              2026년 상반기 출시 예정
+            </p>
+            {data.pricing?.willingToPay !== undefined && data.pricing.willingToPay > 0 && (
               <p className="pricing-reminder">
-                월 {data.chapter4.willingToPay.toLocaleString()}원 정도면 괜찮다고 하셨죠? 😊
+                월 {data.pricing.willingToPay.toLocaleString()}원 정도면 괜찮다고 하셨죠? 😊
               </p>
             )}
             <div className="cta-buttons">

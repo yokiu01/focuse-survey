@@ -1,4 +1,4 @@
-// Google Sheets 데이터 전송 유틸리티
+// Google Sheets 데이터 전송 유틸리티 (v2)
 import { SurveyData } from '../types';
 
 const GOOGLE_SHEETS_URL = import.meta.env.VITE_GOOGLE_SHEETS_URL;
@@ -10,7 +10,7 @@ export interface SubmitResponse {
 }
 
 /**
- * Google Sheets로 설문 데이터 전송
+ * Google Sheets로 설문 데이터 전송 (v2 구조)
  */
 export async function submitToGoogleSheets(data: SurveyData): Promise<SubmitResponse> {
   // 환경 변수 체크
@@ -23,87 +23,64 @@ export async function submitToGoogleSheets(data: SurveyData): Promise<SubmitResp
   }
 
   try {
-    // Google Sheets Apps Script 형식에 맞게 데이터 변환
+    // Google Sheets Apps Script 형식에 맞게 데이터 변환 (v2)
     const payload = {
+      // 세션 정보
       sessionId: data.sessionId,
       startTime: data.startTime,
       lastUpdated: data.lastUpdated,
       deviceType: data.deviceType,
       progress: data.progress,
 
-      // Chapter 1: 아침의 혼돈
-      chapter1: {
-        morningRoutine: data.chapter1.morningRoutine,
-        todoCount: data.chapter1.todoCount,
-        priorityDecision: data.chapter1.priorityDecision,
-        priorityDecisionTime: data.chapter1.priorityDecisionTime,
-        commuteActivity: data.chapter1.commuteActivity
-      },
+      // Intro (Q1)
+      intro_morningRoutine: data.intro.morningRoutine,
 
-      // Chapter 2: 오전 업무 (도구 탐색)
-      chapter2: {
-        currentTools: data.chapter2.currentTools,
-        toolUsageFrequency: data.chapter2.toolUsageFrequency,
-        paidTools: data.chapter2.paidTools,
-        paymentReasons: data.chapter2.paymentReasons,
-        freeReasons: data.chapter2.freeReasons,
-        abandonedApps: data.chapter2.abandonedApps,
-        abandonReasons: data.chapter2.abandonReasons,
-        pomodoroExperience: data.chapter2.pomodoroExperience,
-        pomodoroQuitTime: data.chapter2.pomodoroQuitTime,
-        pomodoroQuitReasons: data.chapter2.pomodoroQuitReasons,
-        pomodoroFrequency: data.chapter2.pomodoroFrequency
-      },
+      // Tools (Q2-Q5)
+      tools_current: data.tools.current?.join(', '),
+      tools_frequency: JSON.stringify(data.tools.frequency),
+      tools_abandoned: data.tools.abandoned?.join(', '),
+      tools_abandonReasons: data.tools.abandonReasons?.join(', '),
 
-      // Chapter 3: 오후 집중력 전투
-      chapter3: {
-        completedTasks: data.chapter3.completedTasks,
-        totalTasks: data.chapter3.totalTasks,
-        energyLevel: data.chapter3.energyLevel,
-        anxietyLevel: data.chapter3.anxietyLevel,
-        phoneCheckCount: data.chapter3.phoneCheckCount,
-        interruptionResponse: data.chapter3.interruptionResponse,
-        yesterdayCompleted: data.chapter3.yesterdayCompleted,
-        yesterdayPlanned: data.chapter3.yesterdayPlanned,
-        failureReasons: data.chapter3.failureReasons,
-        escapeActivities: data.chapter3.escapeActivities
-      },
+      // Spending (Q6)
+      spending_current: data.spending.current,
 
-      // Chapter 4: 퇴근 후 반성 (지불 의향)
-      chapter4: {
-        frustrationFrequency: data.chapter4.frustrationFrequency,
-        copingStrategy: data.chapter4.copingStrategy,
-        adhdSpending: data.chapter4.adhdSpending,
-        valueDescription: data.chapter4.valueDescription,
-        willingToPay: data.chapter4.willingToPay,
-        priceOpinion: data.chapter4.priceOpinion,
-        customPrice: data.chapter4.customPrice
-      },
+      // Execution (Q7-Q9)
+      execution_yesterday: data.execution.yesterday,
+      execution_failFrequency: data.execution.failFrequency,
+      execution_failReasons: data.execution.failReasons?.join(', '),
 
-      // Beta Signup
-      betaSignup: {
-        interested: data.betaSignup?.interested,
-        email: data.betaSignup?.email,
-        notInterestReason: data.betaSignup?.notInterestReason,
-        notifyLater: data.betaSignup?.notifyLater
-      },
+      // Pain Point (Q10)
+      painPoint_main: data.painPoint.main,
+
+      // Solution (Q11)
+      solution_interest: data.solution.interest,
+
+      // Pricing (Q12-Q13) - 핵심 PMF 검증
+      pricing_reaction4900: data.pricing.reaction4900,
+      pricing_willingToPay: data.pricing.willingToPay,
+
+      // Beta Signup (Q14-Q15)
+      betaSignup_email: data.betaSignup.email,
+      betaSignup_skipped: data.betaSignup.skipped,
+
+      // Feedback
+      feedback_openText: data.feedback.openText,
 
       // 메타데이터
       trustScore: data.trustScore,
       dataCompleteness: data.dataCompleteness,
 
       // 행동 데이터
-      behavioral: {
-        backButtonClicks: data.behavioral.backButtonClicks,
-        dropOffPoint: data.behavioral.dropOffPoint,
-        sceneTimings: data.behavioral.sceneTimings
-      },
+      behavioral_backButtonClicks: data.behavioral.backButtonClicks,
+      behavioral_dropOffPoint: data.behavioral.dropOffPoint,
+      behavioral_sceneTimings: JSON.stringify(data.behavioral.sceneTimings),
 
       // 결과
-      result: data.result
+      result_completionTime: data.result?.completionTime,
+      result_userType: data.result?.userType
     };
 
-    console.log('Google Sheets로 데이터 전송 중...', payload);
+    console.log('Google Sheets로 데이터 전송 중 (v2)...', payload);
 
     await fetch(GOOGLE_SHEETS_URL, {
       method: 'POST',
@@ -132,24 +109,27 @@ export async function submitToGoogleSheets(data: SurveyData): Promise<SubmitResp
 }
 
 /**
- * 데이터 완성도 계산 (0-100%)
+ * 데이터 완성도 계산 (0-100%) - v2
  */
 export function calculateDataCompleteness(data: SurveyData): number {
   const fields = [
-    data.chapter1.morningRoutine !== undefined,
-    data.chapter1.todoCount !== undefined,
-    data.chapter1.priorityDecision !== undefined,
-    data.chapter1.priorityDecisionTime !== undefined,
-    data.chapter2.currentTools !== undefined && data.chapter2.currentTools.length > 0,
-    data.chapter2.pomodoroExperience !== undefined,
-    data.chapter3.completedTasks !== undefined,
-    data.chapter3.totalTasks !== undefined,
-    data.chapter3.energyLevel !== undefined,
-    data.chapter3.anxietyLevel !== undefined,
-    data.chapter4.frustrationFrequency !== undefined,
-    data.chapter4.copingStrategy !== undefined,
-    data.chapter4.willingToPay !== undefined,
-    data.betaSignup?.interested !== undefined
+    // Intro
+    data.intro.morningRoutine !== undefined,
+    // Tools
+    data.tools.current !== undefined && data.tools.current.length > 0,
+    // Spending
+    data.spending.current !== undefined,
+    // Execution
+    data.execution.yesterday !== undefined,
+    data.execution.failFrequency !== undefined,
+    // Pain Point
+    data.painPoint.main !== undefined,
+    // Solution
+    data.solution.interest !== undefined,
+    // Pricing (핵심)
+    data.pricing.reaction4900 !== undefined,
+    // Beta Signup
+    data.betaSignup.email !== undefined || data.betaSignup.skipped === true
   ];
 
   const completedFields = fields.filter(Boolean).length;
@@ -157,19 +137,18 @@ export function calculateDataCompleteness(data: SurveyData): number {
 }
 
 /**
- * 신뢰도 점수 계산 (0-100)
+ * 신뢰도 점수 계산 (0-100) - v2
  * - 완료 시간이 너무 짧거나 길면 감점
- * - 모든 답변이 동일하면 감점
  * - 뒤로가기를 너무 많이 사용하면 감점
  */
 export function calculateTrustScore(data: SurveyData): number {
   let score = 100;
 
-  // 완료 시간 체크 (5분 미만 또는 30분 이상이면 의심)
+  // 완료 시간 체크 (3분 미만 또는 20분 이상이면 의심)
   const completionMinutes = data.result?.completionTime || 0;
-  if (completionMinutes < 5) {
+  if (completionMinutes < 3) {
     score -= 30; // 너무 빠름
-  } else if (completionMinutes > 30) {
+  } else if (completionMinutes > 20) {
     score -= 10; // 너무 느림
   }
 

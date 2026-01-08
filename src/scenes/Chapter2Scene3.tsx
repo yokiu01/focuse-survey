@@ -2,175 +2,94 @@ import { useState } from 'react';
 import { SceneProps } from '../types';
 import './SceneStyles.css';
 
-// Chapter 2 - Scene 3: 과거의 무덤
+// Chapter 2 - Q9: 실패 원인 (조건부: 실패가 있는 경우만)
 export const Chapter2Scene3: React.FC<SceneProps> = ({ data, onNext }) => {
-  const [abandonedApps, setAbandonedApps] = useState<string[]>([]);
-  const [showReasons, setShowReasons] = useState(false);
-  const [abandonReasons, setAbandonReasons] = useState<Record<string, string[]>>({});
-
-  const apps = [
-    { id: 'notion', name: 'Notion', emoji: '📓' },
-    { id: 'todoist', name: 'Todoist', emoji: '✅' },
-    { id: 'trello', name: 'Trello', emoji: '📋' },
-    { id: 'evernote', name: 'Evernote', emoji: '🐘' },
-    { id: 'asana', name: 'Asana', emoji: '🎯' },
-    { id: 'monday', name: 'Monday.com', emoji: '📊' },
-    { id: 'clickup', name: 'ClickUp', emoji: '🚀' },
-    { id: 'airtable', name: 'Airtable', emoji: '📑' },
-    { id: 'none', name: '버린 앱 없음', emoji: '😇' }
-  ];
+  const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+  const failFrequency = data.execution.failFrequency;
 
   const reasons = [
-    '너무 복잡해요',
-    '필요 없는 기능이 너무 많아요',
-    '느려요',
-    '유료화 압박이 심해요',
-    '일단 깔았는데 안 쓰게 됐어요',
-    '다른 앱이 더 좋아보여서'
+    { id: 'too_many_plans', text: '계획을 너무 많이 세움', insight: '자동 조절 필요' },
+    { id: 'dont_know_priority', text: '뭐부터 해야 할지 모르겠음', insight: '우선순위 AI - 핵심' },
+    { id: 'took_longer', text: '예상보다 시간이 더 걸림', insight: '시간 예측 AI' },
+    { id: 'distracted', text: '중간에 딴짓함', insight: '맥락 알림' },
+    { id: 'urgent_came_up', text: '급한 일이 끼어듦', insight: '유연한 재조정' },
+    { id: 'didnt_want_to', text: '그냥... 하기 싫었음', insight: '동기부여' }
   ];
 
-  const toggleApp = (appId: string) => {
-    if (appId === 'none') {
-      // "버린 앱 없음" 선택 시 다른 것들 모두 해제
-      setAbandonedApps(['none']);
-    } else {
-      if (abandonedApps.includes(appId)) {
-        setAbandonedApps(abandonedApps.filter(id => id !== appId));
-        // 이유도 함께 제거
-        const newReasons = { ...abandonReasons };
-        delete newReasons[appId];
-        setAbandonReasons(newReasons);
-      } else {
-        // "버린 앱 없음"이 선택되어 있으면 제거
-        const filtered = abandonedApps.filter(id => id !== 'none');
-        setAbandonedApps([...filtered, appId]);
-      }
-    }
-  };
+  // 거의 없음을 선택한 경우 바로 다음으로
+  if (failFrequency === 'rarely') {
+    return (
+      <div className="scene chapter2-scene3">
+        <div className="scene-content">
+          <div className="story-text">
+            <h2>🎉 계획대로 잘 하시는군요!</h2>
+            <p className="scene-description">
+              비결이 뭔가요? 저도 알려주세요 😊
+            </p>
+          </div>
+          <button className="next-button" onClick={() => onNext({})}>
+            다음 → (Chapter 3 시작)
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-  const toggleReason = (appId: string, reason: string) => {
-    const currentReasons = abandonReasons[appId] || [];
-    if (currentReasons.includes(reason)) {
-      setAbandonReasons({
-        ...abandonReasons,
-        [appId]: currentReasons.filter(r => r !== reason)
-      });
-    } else {
-      setAbandonReasons({
-        ...abandonReasons,
-        [appId]: [...currentReasons, reason]
-      });
-    }
-  };
-
-  const handleContinue = () => {
-    if (abandonedApps.includes('none') || abandonedApps.length === 0) {
-      // 버린 앱이 없으면 바로 다음으로
-      handleNext();
-    } else {
-      setShowReasons(true);
+  const toggleReason = (reasonId: string) => {
+    if (selectedReasons.includes(reasonId)) {
+      setSelectedReasons(selectedReasons.filter(id => id !== reasonId));
+    } else if (selectedReasons.length < 3) {
+      setSelectedReasons([...selectedReasons, reasonId]);
     }
   };
 
   const handleNext = () => {
     onNext({
-      chapter2: {
-        ...data.chapter2,
-        abandonedApps,
-        abandonReasons: abandonedApps.includes('none') ? undefined : abandonReasons
+      execution: {
+        ...data.execution,
+        failReasons: selectedReasons
       }
     });
   };
-
-  const allReasonsSet = abandonedApps
-    .filter(app => app !== 'none')
-    .every(app => abandonReasons[app] && abandonReasons[app].length > 0);
 
   return (
     <div className="scene chapter2-scene3">
       <div className="scene-content">
         <div className="story-text">
-          <h2>🪦 잠깐, 휴지통 좀 볼게요</h2>
+          <h2>🤔 왜 계획대로 안 됐을까요?</h2>
           <p className="scene-description">
-            예전에 깔았다가 지운 할 일 앱 있어요?<br />
-            <small>(여러 개 선택 가능)</small>
+            최대 3개까지 선택 가능해요
           </p>
         </div>
 
-        {!showReasons ? (
-          <>
-            <div className="tool-checklist">
-              {apps.map((app) => (
-                <label
-                  key={app.id}
-                  className={`tool-checkbox-label ${abandonedApps.includes(app.id) ? 'checked' : ''}`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={abandonedApps.includes(app.id)}
-                    onChange={() => toggleApp(app.id)}
-                  />
-                  <span className="tool-checkbox-emoji">{app.emoji}</span>
-                  <span className="tool-checkbox-name">{app.name}</span>
-                </label>
-              ))}
-            </div>
-
-            <button
-              className="next-button"
-              onClick={handleContinue}
-              disabled={abandonedApps.length === 0}
+        <div className="reason-checkboxes">
+          {reasons.map((reason) => (
+            <label
+              key={reason.id}
+              className={`reason-checkbox-label ${selectedReasons.includes(reason.id) ? 'checked' : ''} ${selectedReasons.length >= 3 && !selectedReasons.includes(reason.id) ? 'disabled' : ''}`}
             >
-              다음 →
-            </button>
-          </>
-        ) : (
-          <>
-            <div className="follow-up-panel fade-in">
-              <h3>왜 버리셨어요? 🤔</h3>
-              <p className="scene-description">
-                각 앱을 버린 이유를 알려주세요
-              </p>
+              <input
+                type="checkbox"
+                checked={selectedReasons.includes(reason.id)}
+                onChange={() => toggleReason(reason.id)}
+                disabled={selectedReasons.length >= 3 && !selectedReasons.includes(reason.id)}
+              />
+              <span>{reason.text}</span>
+            </label>
+          ))}
+        </div>
 
-              <div className="abandoned-reasons-section">
-                {abandonedApps.filter(app => app !== 'none').map((appId) => {
-                  const app = apps.find(a => a.id === appId);
-                  if (!app) return null;
-
-                  return (
-                    <div key={appId} className="reason-group">
-                      <div className="reason-group-header">
-                        <span className="tool-checkbox-emoji">{app.emoji}</span>
-                        <span className="tool-checkbox-name">{app.name}</span>
-                      </div>
-
-                      <div className="reason-checkboxes">
-                        {reasons.map(reason => (
-                          <label key={reason} className="reason-checkbox-label">
-                            <input
-                              type="checkbox"
-                              checked={(abandonReasons[appId] || []).includes(reason)}
-                              onChange={() => toggleReason(appId, reason)}
-                            />
-                            <span>{reason}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <button
-                className="next-button"
-                onClick={handleNext}
-                disabled={!allReasonsSet}
-              >
-                다음 →
-              </button>
-            </div>
-          </>
+        {selectedReasons.length > 0 && (
+          <p className="selection-count">{selectedReasons.length}/3 선택됨</p>
         )}
+
+        <button
+          className="next-button"
+          onClick={handleNext}
+          disabled={selectedReasons.length === 0}
+        >
+          다음 → (Chapter 3 시작)
+        </button>
       </div>
     </div>
   );

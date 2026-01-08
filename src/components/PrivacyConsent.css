@@ -1,342 +1,300 @@
-/* New PrivacyConsent - Interview Style */
+/* ========================================
+   PRIVACY CONSENT - Clean & Simple Style
+   Mobile-first, CTA-focused design
+   ======================================== */
 
 .privacy-consent {
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: var(--spacing-xl) var(--spacing-lg);
   background: var(--color-surface);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Decorative background */
+.privacy-consent::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--color-primary-light) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .consent-container {
-  background: var(--color-background);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-2xl);
-  max-width: 700px;
+  max-width: 480px;
   width: 100%;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp var(--transition-slow) ease-out;
+}
+
+/* ========================================
+   HERO SECTION (첫 화면)
+   ======================================== */
+
+.hero-section {
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
   box-shadow: var(--shadow-lg);
-  animation: fadeInUp 0.5s ease-out;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* 헤더 */
-.consent-header {
+  border: 1px solid var(--color-border-light);
   text-align: center;
-  margin-bottom: var(--spacing-2xl);
-}
-
-.consent-title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--color-text);
-  margin-bottom: var(--spacing-sm);
-  line-height: 1.3;
-}
-
-.consent-subtitle {
-  font-size: 1.125rem;
-  color: var(--color-text-secondary);
-  font-weight: 500;
-}
-
-/* 콘텐츠 */
-.consent-content {
-  font-size: 1rem;
-  line-height: 1.8;
-  color: var(--color-text);
-}
-
-.consent-content section {
   margin-bottom: var(--spacing-xl);
 }
 
-/* Divider */
-.divider {
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--color-border), transparent);
-  margin: var(--spacing-2xl) 0;
-}
-
-/* 공감대 섹션 */
-.empathy-section p {
-  margin-bottom: var(--spacing-lg);
-}
-
-.personal-story {
-  font-size: 1.0625rem;
+.hero-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: 400;
   color: var(--color-text);
-  line-height: 1.8;
-}
-
-.struggle-story {
-  font-size: 1rem;
-  color: var(--color-text-secondary);
-  line-height: 1.8;
-}
-
-.question-story {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--color-primary);
-  text-align: center;
-  margin-top: var(--spacing-xl);
-}
-
-/* 안전감 섹션 */
-.safety-section .not-sales {
-  text-align: center;
-  font-size: 1.125rem;
-  color: var(--color-text);
-  margin-bottom: var(--spacing-lg);
-}
-
-.safety-section .not-sales strong {
-  color: var(--color-primary);
-  font-weight: 700;
-}
-
-.genuine-interest {
-  font-size: 1rem;
-  color: var(--color-text-secondary);
-  line-height: 1.8;
-  margin-bottom: var(--spacing-md);
-}
-
-.honest-welcome {
-  font-size: 1rem;
-  color: var(--color-text-secondary);
-  line-height: 1.8;
-}
-
-/* 정보 섹션 */
-.info-section h3 {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: var(--spacing-md);
-  margin-top: var(--spacing-lg);
-}
-
-.info-section h3:first-child {
-  margin-top: 0;
-}
-
-.info-list {
-  list-style: none;
-  padding: 0;
   margin: 0 0 var(--spacing-lg) 0;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
 }
 
-.info-list li {
-  padding: var(--spacing-xs) 0 var(--spacing-xs) var(--spacing-lg);
-  position: relative;
+.hero-subtitle {
+  font-size: var(--font-size-base);
   color: var(--color-text-secondary);
   line-height: 1.7;
+  margin: 0 0 var(--spacing-xl) 0;
 }
 
-.info-list li strong {
-  color: var(--color-text);
-  font-weight: 600;
-}
-
-.sub-info {
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
+/* 리워드 배지 */
+.reward-badge {
   display: inline-block;
-  margin-top: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-primary-light) 100%);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xl);
 }
 
-/* 참여 대상 */
-.target-list {
+/* 환영 섹션 */
+.welcome-section {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  text-align: left;
+}
+
+.welcome-title {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.welcome-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.target-list li {
-  padding: var(--spacing-sm) 0 var(--spacing-sm) var(--spacing-2xl);
+.welcome-list li {
+  padding: var(--spacing-xs) 0;
+  padding-left: var(--spacing-lg);
   position: relative;
-  color: var(--color-text);
-  line-height: 1.7;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
 }
 
-.checkbox {
+.welcome-list li::before {
+  content: '✓';
   position: absolute;
   left: 0;
   color: var(--color-primary);
-  font-size: 1.125rem;
   font-weight: 700;
 }
 
-/* CTA 섹션 */
-.cta-section {
-  text-align: center;
-}
-
-.cta-question {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: var(--spacing-md);
-}
-
-.cta-impact {
-  font-size: 1.0625rem;
-  color: var(--color-text-secondary);
-  line-height: 1.8;
-  margin-bottom: var(--spacing-2xl);
-}
-
-.cta-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-}
-
-.btn-accept,
-.btn-thinking,
-.btn-accept-later {
-  padding: var(--spacing-md) var(--spacing-lg);
-  font-size: 1.0625rem;
-  font-weight: 700;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all 0.2s ease;
+/* 메인 버튼 */
+.btn-primary {
+  width: 100%;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  color: var(--color-text-inverse);
   border: none;
-}
-
-.btn-accept,
-.btn-accept-later {
-  background: var(--color-primary);
-  color: var(--color-background);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-accept:hover,
-.btn-accept-later:hover {
-  background: var(--color-primary-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
-.btn-thinking {
-  background: var(--color-background);
-  color: var(--color-text);
-  border: 2px solid var(--color-border);
-}
-
-.btn-thinking:hover {
-  border-color: var(--color-primary);
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-}
-
-/* Thinking Panel */
-.thinking-panel {
-  background: var(--color-primary-light);
-  padding: var(--spacing-xl);
   border-radius: var(--radius-lg);
-  margin-top: var(--spacing-lg);
-  border: 2px solid var(--color-primary);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md), 0 4px 0 var(--color-primary-dark);
 }
 
-.thinking-message {
-  font-size: 1rem;
-  color: var(--color-text);
-  line-height: 1.7;
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg), 0 6px 0 var(--color-primary-dark);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm), 0 2px 0 var(--color-primary-dark);
+}
+
+/* ========================================
+   FAQ SECTION (스크롤 영역)
+   ======================================== */
+
+.faq-section {
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border-light);
   margin-bottom: var(--spacing-lg);
 }
 
-/* 문의 섹션 */
-.contact-section {
+.faq-title {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-lg) 0;
   text-align: center;
-  font-size: 0.9375rem;
 }
 
-.contact-title {
+.faq-item {
+  border-bottom: 1px solid var(--color-border-light);
+  padding: var(--spacing-md) 0;
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.faq-item:first-of-type {
+  padding-top: 0;
+}
+
+.faq-item summary {
+  font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--color-text);
-  margin-bottom: var(--spacing-sm);
+  cursor: pointer;
+  padding: var(--spacing-sm) 0;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: color var(--transition-fast);
 }
 
-.contact-info {
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: '+';
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.faq-item[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.faq-item summary:hover {
+  color: var(--color-primary);
+}
+
+.faq-item p {
+  font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
   line-height: 1.7;
+  margin: var(--spacing-sm) 0 0 0;
+  padding: var(--spacing-sm) 0 var(--spacing-sm) var(--spacing-md);
+  border-left: 2px solid var(--color-primary-light);
+  animation: fadeIn var(--transition-fast);
 }
 
-.contact-info a {
-  color: var(--color-primary);
+/* ========================================
+   CONTACT SECTION
+   ======================================== */
+
+.contact-section {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  padding: var(--spacing-md);
+}
+
+.contact-section p {
+  margin: 0;
+}
+
+.contact-section a {
+  color: var(--color-text-secondary);
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  transition: color var(--transition-fast);
 }
 
-.contact-info a:hover {
-  color: var(--color-primary-hover);
+.contact-section a:hover {
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
-/* 모바일 최적화 */
+/* ========================================
+   MOBILE OPTIMIZATION
+   ======================================== */
+
 @media (max-width: 768px) {
   .privacy-consent {
     padding: var(--spacing-lg) var(--spacing-md);
+    align-items: flex-start;
   }
 
-  .consent-container {
-    padding: var(--spacing-xl) var(--spacing-lg);
+  .hero-section {
+    padding: var(--spacing-xl);
   }
 
-  .consent-title {
-    font-size: 1.75rem;
+  .hero-title {
+    font-size: var(--font-size-xl);
   }
 
-  .consent-subtitle {
-    font-size: 1rem;
+  .hero-subtitle {
+    font-size: var(--font-size-sm);
   }
 
-  .personal-story,
-  .struggle-story,
-  .question-story,
-  .genuine-interest,
-  .honest-welcome,
-  .cta-impact {
-    font-size: 0.9375rem;
+  .reward-badge {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-md);
   }
 
-  .cta-question {
-    font-size: 1.125rem;
+  .btn-primary {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-base);
   }
 
-  .btn-accept,
-  .btn-thinking,
-  .btn-accept-later {
-    padding: var(--spacing-sm) var(--spacing-md);
-    font-size: 1rem;
+  .faq-section {
+    padding: var(--spacing-lg);
   }
 }
 
 @media (max-width: 480px) {
-  .consent-title {
-    font-size: 1.5rem;
+  .hero-title {
+    font-size: var(--font-size-lg);
   }
 
-  .consent-subtitle {
-    font-size: 0.9375rem;
+  .welcome-section {
+    padding: var(--spacing-md);
   }
 
-  .divider {
-    margin: var(--spacing-lg) 0;
+  .welcome-title {
+    font-size: var(--font-size-sm);
   }
 }

@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { calculateProgress, getCompletionCount } from '../utils/analytics';
+import { calculateProgress } from '../utils/analytics';
 import './ProgressBar.css';
 
 interface ProgressBarProps {
@@ -13,17 +12,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   totalScenes,
   estimatedTimeLeft
 }) => {
-  const [completionCount, setCompletionCount] = useState(getCompletionCount());
-  const progress = calculateProgress(currentScene, totalScenes, true); // 부풀린 진행률
-
-  // 완료 인원 랜덤 업데이트 (사회적 증거 강화)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCompletionCount(getCompletionCount());
-    }, 30000); // 30초마다
-
-    return () => clearInterval(interval);
-  }, []);
+  const progress = calculateProgress(currentScene, totalScenes, true);
 
   return (
     <div className="progress-bar-container">
@@ -43,9 +32,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
               예상 {estimatedTimeLeft}분 남음
             </span>
           )}
-          <span className="progress-social">
-            이미 {completionCount.toLocaleString()}명 완료
-          </span>
         </div>
       </div>
     </div>

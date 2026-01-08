@@ -1,146 +1,73 @@
-import { useState } from 'react';
 import { SceneProps } from '../types';
 import './SceneStyles.css';
 
-// Chapter 3 - Scene 2: 방해의 파도
-export const Chapter3Scene2: React.FC<SceneProps> = ({ data, onNext }) => {
-  const [phoneCheckCount, setPhoneCheckCount] = useState(10);
-  const [showResponse, setShowResponse] = useState(false);
-  const [selectedResponse, setSelectedResponse] = useState<string | null>(null);
+// Chapter 3 - Q11: 솔루션 제시
+export const Chapter3Scene2: React.FC<SceneProps> = ({ onNext }) => {
 
-  const responses = [
-    {
-      id: 'ignore_all',
-      emoji: '🚫',
-      title: '다 무시합니다',
-      subtitle: '집중 모드 ON',
-      feedback: '의지력 갑! 하지만 힘들죠? 😅'
-    },
-    {
-      id: 'check_kakao',
-      emoji: '💬',
-      title: '카톡만 확인해요',
-      subtitle: '급한 거 있을까봐...',
-      feedback: '그렇게 급한 건 거의 없는데 말이죠 😅'
-    },
-    {
-      id: 'check_all',
-      emoji: '📱',
-      title: '일단 다 봅니다',
-      subtitle: 'SNS도 슥슥...',
-      feedback: '30분이 3분처럼 사라지죠 🙃'
-    },
-    {
-      id: 'escape',
-      emoji: '🏃',
-      title: '아예 핸드폰 멀리 둡니다',
-      subtitle: '보지도 않을 거예요!',
-      feedback: '그런데 가서 가져오게 되죠... 😂'
-    }
+  const options = [
+    { id: 'want_now', emoji: '🤩', title: '당장 쓰고 싶다', subtitle: '언제 나와요?' },
+    { id: 'looks_ok', emoji: '🤔', title: '괜찮아 보인다', subtitle: '한번 써볼 수도...' },
+    { id: 'unsure', emoji: '😐', title: '글쎄...', subtitle: '잘 모르겠어요' },
+    { id: 'not_needed', emoji: '🙅', title: '필요 없다', subtitle: '지금도 괜찮아요' }
   ];
 
-  const handlePhoneCountNext = () => {
-    setShowResponse(true);
-  };
-
-  const handleResponseSelect = (responseId: string) => {
-    setSelectedResponse(responseId);
-  };
-
-  const handleNext = () => {
+  const handleChoice = (choice: 'want_now' | 'looks_ok' | 'unsure' | 'not_needed') => {
     onNext({
-      chapter3: {
-        ...data.chapter3,
-        phoneCheckCount,
-        interruptionResponse: selectedResponse as any
+      solution: {
+        interest: choice
       }
     });
   };
-
-  const getPhoneCheckEmoji = () => {
-    if (phoneCheckCount >= 30) return '📱💥';
-    if (phoneCheckCount >= 15) return '📱😰';
-    if (phoneCheckCount >= 5) return '📱😐';
-    return '📱😌';
-  };
-
-  const getPhoneCheckComment = () => {
-    if (phoneCheckCount >= 30) return '와... 그게 가능해요? 😱';
-    if (phoneCheckCount >= 15) return '꽤 자주 보시네요 😅';
-    if (phoneCheckCount >= 5) return '평범한 편이네요';
-    return '엄청 집중하시는 편이군요! 👏';
-  };
-
-  const selectedResponseData = responses.find(r => r.id === selectedResponse);
 
   return (
     <div className="scene chapter3-scene2">
       <div className="scene-content">
         <div className="story-text">
-          <h2>📱 잠깐, 핸드폰 진동이...</h2>
-          <p className="scene-description">
-            업무 중 핸드폰, 얼마나 자주 보세요?
-          </p>
+          <h2>💡 이런 앱이 있다면요?</h2>
         </div>
 
-        {!showResponse ? (
-          <div className="question-panel fade-in">
-            <h3>오전부터 지금까지 몇 번?</h3>
-            <div className="emotion-slider">
-              <div className="emotion-emoji">{getPhoneCheckEmoji()}</div>
-              <div className="slider-container">
-                <input
-                  type="range"
-                  min="0"
-                  max="50"
-                  value={phoneCheckCount}
-                  onChange={(e) => setPhoneCheckCount(Number(e.target.value))}
-                  className="number-slider"
-                />
-                <div className="slider-value big">
-                  {phoneCheckCount}번
-                </div>
-                <div className="slider-labels">
-                  <span>거의 안 봄</span>
-                  <span>보통</span>
-                  <span>엄청 많이</span>
-                </div>
-              </div>
-              <p className="completion-comment">{getPhoneCheckComment()}</p>
-            </div>
+        {/* 솔루션 설명 카드 */}
+        <div className="solution-card">
+          <p className="solution-intro">"보고서 작성" 이라고만 입력하면</p>
+          <p className="solution-intro">AI가 자동으로:</p>
 
-            <button className="next-button" onClick={handlePhoneCountNext}>
-              다음 →
-            </button>
-          </div>
-        ) : !selectedResponse ? (
-          <div className="fade-in">
-            <h3 style={{ textAlign: 'center', marginBottom: 'var(--spacing-xl)' }}>
-              알림 오면 어떻게 하세요?
-            </h3>
-            <div className="choice-group">
-              {responses.map((response) => (
-                <button
-                  key={response.id}
-                  className="choice-button"
-                  onClick={() => handleResponseSelect(response.id)}
-                >
-                  <span className="choice-emoji">{response.emoji}</span>
-                  <span className="choice-title">{response.title}</span>
-                  <span className="choice-subtitle">{response.subtitle}</span>
-                </button>
-              ))}
+          <div className="solution-features">
+            <div className="feature-item">
+              <span className="feature-check">✅</span>
+              <span>최적 시간 배정 (월요일 오전 9시)</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-check">✅</span>
+              <span>단계별 분해 (개요 30분 → 본문 1시간)</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-check">✅</span>
+              <span>시작 전 알림 ("지금 집중력 좋아요!")</span>
             </div>
           </div>
-        ) : (
-          <div className="feedback-panel fade-in">
-            <div className="feedback-icon">{selectedResponseData?.emoji}</div>
-            <p className="feedback-text">{selectedResponseData?.feedback}</p>
-            <button className="next-button" onClick={handleNext}>
-              다음 →
+
+          <p className="solution-outro">당신은 <strong>실행만</strong> 하면 됩니다.</p>
+        </div>
+
+        <div className="question-divider">
+          <span>이런 앱, 어떻게 생각하세요?</span>
+        </div>
+
+        <div className="choice-group">
+          {options.map((option) => (
+            <button
+              key={option.id}
+              className="choice-button"
+              onClick={() => handleChoice(option.id as any)}
+            >
+              <span className="choice-emoji">{option.emoji}</span>
+              <div className="choice-content">
+                <div className="choice-title">{option.title}</div>
+                <div className="choice-subtitle">{option.subtitle}</div>
+              </div>
             </button>
-          </div>
-        )}
+          ))}
+        </div>
       </div>
     </div>
   );

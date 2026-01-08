@@ -1,4 +1,4 @@
-// 게임형 설문 데이터 타입 정의
+// ExecuteAI 설문 v2.0 데이터 타입 정의
 
 export interface SurveyData {
   // 세션 정보
@@ -7,79 +7,62 @@ export interface SurveyData {
   startTime: number;
   lastUpdated: number;
   deviceType: 'mobile' | 'desktop';
-  currentChapter: number;
   currentScene: number;
   progress: number; // 0-100
 
-  // Chapter 1: 아침의 혼돈
-  chapter1: {
-    morningRoutine?: 'snooze_3times' | 'wake_immediately' | 'snooze_alarm' | 'check_sns';
-    todoCount?: number; // 0-50+
-    priorityDecision?: 'report' | 'planning' | 'email' | 'random' | 'youtube';
-    priorityDecisionTime?: number; // 초
-    commuteActivity?: 'sns' | 'news' | 'music' | 'planning' | 'sleep';
+  // Intro: 아침 루틴 (Q1)
+  intro: {
+    morningRoutine?: 'snooze' | 'wake_plan' | 'sns' | 'stay_bed';
   };
 
-  // Chapter 2: 오전 업무 (도구 탐색)
-  chapter2: {
-    currentTools?: string[]; // Notion, Todoist, Trello, 종이, 등
-    toolUsageFrequency?: Record<string, 'daily' | 'sometimes' | 'installed'>;
-    paidTools?: Record<string, number>; // 도구명: 월 비용
-    paymentReasons?: string[]; // 유료 전환 이유
-    freeReasons?: string[]; // 무료 고수 이유
-    abandonedApps?: string[];
-    abandonReasons?: Record<string, string[]>;
-    pomodoroExperience?: 'use_now' | 'tried_quit' | 'heard_not_tried' | 'never_heard';
-    pomodoroQuitTime?: number; // 몇 분만에 끔
-    pomodoroQuitReasons?: string[];
-    pomodoroFrequency?: number; // 하루 몇 번
+  // Chapter 1: 도구 사용 패턴 (Q2-Q6)
+  tools: {
+    current?: string[]; // 현재 사용 도구
+    frequency?: Record<string, 'daily' | 'sometimes' | 'installed_only'>; // 사용 빈도
+    abandoned?: string[]; // 버린 앱
+    abandonReasons?: string[]; // 포기 이유
   };
 
-  // Chapter 3: 오후 집중력 전투
-  chapter3: {
-    completedTasks?: number;
-    totalTasks?: number;
-    energyLevel?: number; // 0-100
-    anxietyLevel?: number; // 0-100
-    phoneCheckCount?: number; // 0-50+
-    interruptionResponse?: 'ignore_all' | 'check_kakao' | 'check_all' | 'escape';
-    yesterdayCompleted?: number;
-    yesterdayPlanned?: number;
-    failureReasons?: string[];
-    escapeActivities?: string[];
+  // 현재 지출 (Q6)
+  spending: {
+    current?: '0' | '~5000' | '~10000' | '15000+';
   };
 
-  // Chapter 4: 퇴근 후 반성 (지불 의향)
-  chapter4: {
-    frustrationFrequency?: 'daily' | 'weekly_3_4' | 'weekly_1_2' | 'rarely';
-    copingStrategy?: 'self_blame' | 'overtime' | 'give_up' | 'hope_tomorrow';
-    adhdSpending?: {
-      medication?: number;
-      therapy?: number;
-      apps?: number;
-      books?: number;
-      cafe?: number;
-      headphones?: number;
-      total?: number;
-    };
-    valueDescription?: string; // 자유 입력
-    willingToPay?: number; // 0-50000
-    priceOpinion?: 'ok' | 'expensive' | 'too_cheap' | 'custom';
-    customPrice?: number;
+  // Chapter 2: 실행 패턴 (Q7-Q9)
+  execution: {
+    yesterday?: number; // 0-100 (어제 실행률)
+    failFrequency?: 'daily' | 'often' | 'sometimes' | 'rarely';
+    failReasons?: string[];
   };
 
-  // 베타 신청
-  betaSignup?: {
-    interested?: boolean;
+  // Chapter 3: 솔루션 반응 (Q10-Q13)
+  painPoint: {
+    main?: 'organizing' | 'prioritizing' | 'planning' | 'starting' | 'focusing';
+  };
+
+  solution: {
+    interest?: 'want_now' | 'looks_ok' | 'unsure' | 'not_needed';
+  };
+
+  pricing: {
+    reaction4900?: 'will_pay' | 'only_free' | 'too_expensive' | 'no_interest';
+    willingToPay?: number;
+  };
+
+  // Outro: 베타 신청 (Q14-Q15)
+  betaSignup: {
     email?: string;
-    notifyLater?: boolean;
-    notInterestReason?: string;
+    skipped?: boolean;
+  };
+
+  feedback: {
+    openText?: string;
   };
 
   // 결과 분석
   result?: {
     userType?: 'storm_multitasker' | 'perfectionist_procrastinator' | 'focus_survivor' | 'lost_navigator';
-    completionTime?: number; // 초
+    completionTime?: number; // 분
     sharedResult?: boolean;
   };
 

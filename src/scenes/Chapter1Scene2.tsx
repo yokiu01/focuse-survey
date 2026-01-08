@@ -2,78 +2,120 @@ import { useState } from 'react';
 import { SceneProps } from '../types';
 import './SceneStyles.css';
 
-// Chapter 1 - Scene 2: 할 일 목록을 마주하다
+// Chapter 1 - Q3: 도구 사용 빈도
 export const Chapter1Scene2: React.FC<SceneProps> = ({ data, onNext }) => {
-  const [todoCount, setTodoCount] = useState(10);
-  const [showReaction, setShowReaction] = useState(false);
+  const currentTools = data.tools.current || [];
+  const [frequency, setFrequency] = useState<Record<string, string>>({});
 
-  const getReaction = (count: number) => {
-    if (count <= 5) return { emoji: '😊', text: '오, 미니멀리스트시군요!' };
-    if (count <= 20) return { emoji: '😐', text: '대부분 사람들이 이 정도예요' };
-    return { emoji: '😰', text: '어... 이거 진짜 다 하실 건가요?' };
+  const toolNames: Record<string, { name: string; emoji: string }> = {
+    notion: { name: 'Notion', emoji: '📓' },
+    todoist: { name: 'Todoist', emoji: '✅' },
+    tiimo: { name: 'Tiimo', emoji: '⏰' },
+    gcal: { name: 'Google 캘린더', emoji: '📅' },
+    paper: { name: '종이/포스트잇', emoji: '📝' },
+    kakao: { name: '카톡 나에게 보내기', emoji: '💬' },
+    none: { name: '머릿속에만', emoji: '🧠' },
+    other: { name: '기타', emoji: '📦' }
+  };
+
+  // 빈도 질문이 필요한 도구만 필터링 (none 제외)
+  const toolsToAsk = currentTools.filter(t => t !== 'none');
+
+  const setToolFrequency = (toolId: string, freq: string) => {
+    setFrequency({
+      ...frequency,
+      [toolId]: freq
+    });
   };
 
   const handleNext = () => {
+    const freqData: Record<string, 'daily' | 'sometimes' | 'installed_only'> = {};
+    Object.keys(frequency).forEach(key => {
+      freqData[key] = frequency[key] as 'daily' | 'sometimes' | 'installed_only';
+    });
+
     onNext({
-      chapter1: {
-        ...data.chapter1,
-        todoCount
+      tools: {
+        ...data.tools,
+        frequency: freqData
       }
     });
   };
 
-  const reaction = getReaction(todoCount);
+  const allAnswered = toolsToAsk.every(tool => frequency[tool] !== undefined);
+
+  // 도구가 없거나 머릿속에만이면 바로 다음으로
+  if (toolsToAsk.length === 0) {
+    return (
+      <div className="scene chapter1-scene2">
+        <div className="scene-content">
+          <div className="story-text">
+            <h2>🧠 머릿속으로 관리하시는군요!</h2>
+            <p className="scene-description">
+              도구 없이 관리하시는 분들도 많아요
+            </p>
+          </div>
+          <button className="next-button" onClick={() => onNext({})}>
+            다음 →
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="scene chapter1-scene2">
       <div className="scene-content">
-        {/* 스토리 */}
         <div className="story-text">
-          <h2>📱 당신의 할 일 목록을 엽니다</h2>
+          <h2>📊 그거, 실제로 매일 여세요?</h2>
           <p className="scene-description">
-            얼마나 많은 할 일이 쌓여 있나요?
+            선택한 도구들의 실제 사용 빈도를 알려주세요
           </p>
         </div>
 
-        {/* 슬라이더 영역 */}
-        <div className="question-panel">
-          <div className="slider-interaction">
-            {showReaction && (
-              <div className="reaction-bubble fade-in">
-                <span className="reaction-emoji">{reaction.emoji}</span>
-                <p className="reaction-text">{reaction.text}</p>
-              </div>
-            )}
+        <div className="frequency-questions">
+          {toolsToAsk.map((toolId) => {
+            const tool = toolNames[toolId];
+            if (!tool) return null;
 
-            <div className="slider-container">
-              <div className="slider-value big">{todoCount}개</div>
-              <input
-                type="range"
-                min="0"
-                max="50"
-                value={todoCount}
-                onChange={(e) => {
-                  setTodoCount(Number(e.target.value));
-                  setShowReaction(true);
-                }}
-                className="number-slider"
-              />
-              <div className="slider-labels">
-                <span>0개<br />📭 비어있음</span>
-                <span>25개<br />📫 보통</span>
-                <span>50개+<br />📬 폭발 직전</span>
+            return (
+              <div key={toolId} className="frequency-question">
+                <div className="frequency-header">
+                  <span className="frequency-emoji">{tool.emoji}</span>
+                  <span className="frequency-name">{tool.name}</span>
+                </div>
+                <div className="frequency-options">
+                  <button
+                    className={`frequency-button ${frequency[toolId] === 'daily' ? 'selected' : ''}`}
+                    onClick={() => setToolFrequency(toolId, 'daily')}
+                  >
+                    매일 봄
+                  </button>
+                  <button
+                    className={`frequency-button ${frequency[toolId] === 'sometimes' ? 'selected' : ''}`}
+                    onClick={() => setToolFrequency(toolId, 'sometimes')}
+                  >
+                    가끔...
+                  </button>
+                  <button
+                    className={`frequency-button ${frequency[toolId] === 'installed_only' ? 'selected' : ''}`}
+                    onClick={() => setToolFrequency(toolId, 'installed_only')}
+                  >
+                    깔아만 놨음
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <button
-            className="next-button"
-            onClick={handleNext}
-            disabled={!showReaction}
-          >
-            다음 →
-          </button>
+            );
+          })}
         </div>
+
+        <button
+          className="next-button"
+          onClick={handleNext}
+          disabled={!allAnswered}
+        >
+          다음 →
+        </button>
       </div>
     </div>
   );

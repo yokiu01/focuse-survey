@@ -1,13 +1,39 @@
+import { useState } from 'react';
 import { SceneProps } from '../types';
 import './SceneStyles.css';
 
-// Chapter 1 - Scene 1: 알람이 울린다
-export const Chapter1Scene1: React.FC<SceneProps> = ({ data, onNext }) => {
-  const handleChoice = (choice: 'snooze_3times' | 'wake_immediately' | 'snooze_alarm' | 'check_sns') => {
+// Chapter 1 - Q2: 현재 사용 도구
+export const Chapter1Scene1: React.FC<SceneProps> = ({ onNext }) => {
+  const [selectedTools, setSelectedTools] = useState<string[]>([]);
+
+  const tools = [
+    { id: 'notion', name: 'Notion', emoji: '📓' },
+    { id: 'todoist', name: 'Todoist', emoji: '✅' },
+    { id: 'tiimo', name: 'Tiimo', emoji: '⏰' },
+    { id: 'gcal', name: 'Google 캘린더', emoji: '📅' },
+    { id: 'paper', name: '종이/포스트잇', emoji: '📝' },
+    { id: 'kakao', name: '카톡 나에게 보내기', emoji: '💬' },
+    { id: 'none', name: '머릿속에만', emoji: '🧠' },
+    { id: 'other', name: '기타', emoji: '📦' }
+  ];
+
+  const toggleTool = (toolId: string) => {
+    if (toolId === 'none') {
+      setSelectedTools(['none']);
+    } else {
+      const filtered = selectedTools.filter(id => id !== 'none');
+      if (selectedTools.includes(toolId)) {
+        setSelectedTools(filtered.filter(id => id !== toolId));
+      } else {
+        setSelectedTools([...filtered, toolId]);
+      }
+    }
+  };
+
+  const handleNext = () => {
     onNext({
-      chapter1: {
-        ...data.chapter1,
-        morningRoutine: choice
+      tools: {
+        current: selectedTools
       }
     });
   };
@@ -15,67 +41,37 @@ export const Chapter1Scene1: React.FC<SceneProps> = ({ data, onNext }) => {
   return (
     <div className="scene chapter1-scene1">
       <div className="scene-content">
-        {/* 시간 표시 */}
-        <div className="time-display">
-          <h1 className="time">07:30 AM</h1>
-          <p className="day">월요일 아침</p>
-        </div>
-
-        {/* 스토리 */}
         <div className="story-text">
-          <h2>🌅 알람이 울립니다</h2>
+          <h2>💻 할 일 관리, 지금 뭐 쓰세요?</h2>
           <p className="scene-description">
-            스마트폰 알람이 울립니다.<br />
-            오늘도 해야 할 일이 산더미...
+            여러 개 선택 가능해요
           </p>
         </div>
 
-        {/* 선택지 */}
-        <div className="choice-group">
-          <button
-            className="choice-button"
-            onClick={() => handleChoice('snooze_alarm')}
-          >
-            <span className="choice-emoji">😴</span>
-            <div className="choice-content">
-              <div className="choice-title">알람 끄고 5분만 더 눕기</div>
-              <div className="choice-subtitle">(진짜로 5분일 리 없지만...)</div>
-            </div>
-          </button>
-
-          <button
-            className="choice-button"
-            onClick={() => handleChoice('wake_immediately')}
-          >
-            <span className="choice-emoji">💪</span>
-            <div className="choice-content">
-              <div className="choice-title">바로 일어나서 할 일 목록 확인</div>
-              <div className="choice-subtitle">오늘은 달라질 거야!</div>
-            </div>
-          </button>
-
-          <button
-            className="choice-button"
-            onClick={() => handleChoice('snooze_3times')}
-          >
-            <span className="choice-emoji">⏰</span>
-            <div className="choice-content">
-              <div className="choice-title">알람 미루기 버튼 3번 누르기</div>
-              <div className="choice-subtitle">딱 3번만... 정말로...</div>
-            </div>
-          </button>
-
-          <button
-            className="choice-button"
-            onClick={() => handleChoice('check_sns')}
-          >
-            <span className="choice-emoji">📱</span>
-            <div className="choice-content">
-              <div className="choice-title">핸드폰 집어들고 SNS부터 확인</div>
-              <div className="choice-subtitle">잠깐만... (30분 경과)</div>
-            </div>
-          </button>
+        <div className="tool-checklist">
+          {tools.map((tool) => (
+            <label
+              key={tool.id}
+              className={`tool-checkbox-label ${selectedTools.includes(tool.id) ? 'checked' : ''}`}
+            >
+              <input
+                type="checkbox"
+                checked={selectedTools.includes(tool.id)}
+                onChange={() => toggleTool(tool.id)}
+              />
+              <span className="tool-checkbox-emoji">{tool.emoji}</span>
+              <span className="tool-checkbox-name">{tool.name}</span>
+            </label>
+          ))}
         </div>
+
+        <button
+          className="next-button"
+          onClick={handleNext}
+          disabled={selectedTools.length === 0}
+        >
+          다음 →
+        </button>
       </div>
     </div>
   );
