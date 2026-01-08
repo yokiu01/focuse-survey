@@ -1,57 +1,40 @@
-# ADHD 생산성 도구 설문 - Flow Labs
+# INTENTIO - ADHD 생산성 도구 설문
 
 ADHD를 가진 사람들의 실제 경험을 이해하고 더 나은 생산성 도구를 만들기 위한 인터랙티브 설문 애플리케이션입니다.
 
 ## ✨ 주요 기능
 
-### 📊 데이터 수집 (25개 포인트)
-- **정량 데이터**: 불안도, 의사결정 시간, 클릭률, 완료율, 지불 의향 등
-- **정성 데이터**: 도구 사용 현황, 이탈 이유, 가치 인식 등
-- **행동 데이터**: 체류 시간, 클릭 패턴, 슬라이더 조작 횟수 등
+### 📊 설문 구조 (v2 - 14개 질문)
+- **예상 소요 시간**: 5-7분
+- **The Mom Test 기반**: 과거 행동 중심 질문
+- **PMF 검증**: 가격 반응 및 지불 의향 측정
 
-### 🎯 핵심 기능
+### 🎯 질문 구성
 
-#### 1. 개인정보 동의
-- GDPR 준수 개인정보처리방침
-- 명확한 데이터 수집 항목 고지
-- 선택적 동의 (베타 신청)
+| 챕터 | 질문 | 목적 |
+|------|------|------|
+| Intro | Q1: 아침 루틴 | 몰입 유도 |
+| Chapter 1 | Q2-Q6: 도구 사용 패턴 | 현재 행동 파악 |
+| Chapter 2 | Q7-Q9: 실행 패턴 | 페인포인트 발굴 |
+| Chapter 3 | Q10-Q13: 솔루션 반응 | PMF 검증 (핵심) |
+| Outro | Q14-Q15: 베타 신청 | 리드 수집 |
 
-#### 2. 진행률 표시 & 중간 저장
-- ✅ 실시간 진행률 표시 (부풀린 진행률로 동기부여)
-- ✅ LocalStorage 기반 자동 중간 저장
-- ✅ 이어하기 기능 (7일간 유효)
-- ✅ 사회적 증거 (완료 인원 표시)
-
-#### 3. Act 1: 아침의 혼돈
-- **Scene 1-1**: 아침 불안도 측정 (슬라이더)
-- **Scene 1-2**: 생산성 도구 선택 및 Pain Point 수집
-- **Scene 1-3**: 실시간 의사결정 시간 측정
-
-#### 4. Act 2: 집중력 전쟁
-- **Scene 2-1**: 포모도로 시뮬레이션 + 방해 요소 클릭률 측정
-- 재집중 시간 및 포모도로 완료율 조사
-
-#### 5. Act 3: 오후의 타협
-- 실제 생산성 측정 (완료 개수 vs 계획)
-- AI 기반 3개 작업 제안에 대한 수용도 조사
-
-#### 6. Act 4: 저녁 회고 & 지불 의향
-- 작업 완료 시 얻는 가치 조사
-- 현재 ADHD 관리 지출 현황
-- 지불 의향 금액 측정
-
-#### 7. Ending: 리포트 & 베타 전환
-- 개인화된 ADHD 생존 리포트
-- 비교 통계 (순위, 완료율 등)
-- 베타 테스터 CTA
+### 🔒 보안 기능
+- Vercel Serverless Functions를 통한 API 보호
+- Google Sheets URL 서버 사이드 은닉
+- Rate Limiting (1분당 5회)
+- 입력 데이터 검증 및 XSS 방지
+- 보안 헤더 적용
 
 ## 🛠️ 기술 스택
 
 - **Frontend**: React 18 + TypeScript
 - **Build Tool**: Vite
-- **Styling**: CSS3 (모바일 최적화)
+- **Styling**: CSS3 (CSS Variables, 모바일 최적화)
+- **Backend**: Vercel Serverless Functions
+- **Database**: Google Sheets (Apps Script)
 - **Storage**: LocalStorage (중간 저장)
-- **Analytics**: Custom tracking (시간, 클릭, 행동 패턴)
+- **Deployment**: Vercel
 
 ## 🚀 시작하기
 
@@ -65,150 +48,103 @@ npm install
 npm run dev
 ```
 
+### Vercel 로컬 개발 (API 포함)
+```bash
+npm i -g vercel
+vercel dev
+```
+
 ### 빌드
 ```bash
 npm run build
-```
-
-### 프리뷰
-```bash
-npm run preview
 ```
 
 ## 📁 프로젝트 구조
 
 ```
 survey/
+├── api/                        # Vercel Serverless Functions
+│   └── submit.ts               # 데이터 제출 API (보안)
 ├── src/
-│   ├── components/          # 공용 컴포넌트
-│   │   ├── PrivacyConsent.tsx    # 개인정보 동의
-│   │   └── ProgressBar.tsx       # 진행률 표시
-│   ├── scenes/              # 씬 컴포넌트
-│   │   ├── Act1Scene1.tsx        # 아침 불안도
-│   │   ├── Act1Scene2.tsx        # 도구 선택
-│   │   ├── Act1Scene3.tsx        # 의사결정 시간
-│   │   ├── Act2Scene1.tsx        # 포모도로
-│   │   ├── Act3Scene1.tsx        # 현실 체크 + AI 제안
-│   │   ├── Act4Scene1.tsx        # 회고 + 지불 의향
-│   │   ├── Ending.tsx            # 리포트
-│   │   └── SceneStyles.css       # 공통 씬 스타일
-│   ├── utils/               # 유틸리티
-│   │   ├── storage.ts            # LocalStorage 관리
-│   │   └── analytics.ts          # 행동 데이터 추적
-│   ├── types.ts             # TypeScript 타입 정의
-│   ├── App.tsx              # 메인 앱
-│   ├── App.css              # 메인 스타일
-│   └── main.tsx             # 엔트리포인트
-├── index.html
-├── package.json
-└── vite.config.ts
+│   ├── components/             # 공용 컴포넌트
+│   │   ├── PrivacyConsent.tsx  # 첫 페이지 (동의)
+│   │   ├── ProgressBar.tsx     # 진행률 표시
+│   │   └── ResultPage.tsx      # 결과 페이지
+│   ├── scenes/                 # 설문 씬 컴포넌트
+│   │   ├── IntroScene.tsx      # Q1: 아침 루틴
+│   │   ├── Chapter1Scene1-5.tsx # Q2-Q6: 도구 패턴
+│   │   ├── Chapter2Scene1-3.tsx # Q7-Q9: 실행 패턴
+│   │   ├── Chapter3Scene1-4.tsx # Q10-Q13: 솔루션 반응
+│   │   ├── OutroScene1-2.tsx   # Q14-Q15: 베타 신청
+│   │   └── SceneStyles.css     # 공통 씬 스타일
+│   ├── utils/
+│   │   ├── storage.ts          # LocalStorage 관리
+│   │   ├── analytics.ts        # 행동 데이터 추적
+│   │   ├── googleSheets.ts     # API 호출
+│   │   └── typeAnalyzer.ts     # 사용자 타입 분석
+│   ├── types.ts                # TypeScript 타입
+│   ├── App.tsx                 # 메인 앱
+│   └── main.tsx                # 엔트리포인트
+├── vercel.json                 # Vercel 설정
+├── .env.example                # 환경 변수 예시
+└── QUESTIONS_v2.md             # 질문 목록 문서
 ```
 
-## 📊 수집되는 데이터
+## 🚀 배포 (Vercel)
 
-### 정량 데이터 (10개)
-1. 아침 불안도 (0-100)
-2. 의사결정 시간 (초)
-3. 방해 요소별 클릭률
-4. 재집중 소요 시간
-5. 실제 일일 완료 개수
-6. 계획 작업 개수
-7. 완료율 (자동 계산)
-8. MVP 수용도 (0-100)
-9. 지불 의향 금액
-10. 현재 지출 금액
+### 1. 환경 변수 설정
+Vercel Dashboard > Settings > Environment Variables:
 
-### 정성 데이터 (9개)
-11. 사용 중인 도구
-12. 도구 사용 기간
-13. 도구 불편한 점
-14. 앱 미사용 이유
-15. 포모도로 이탈 이유
-16. MVP 선호/거부 이유
-17. 완료 시 얻는 가치
-18. ADHD 관리 방법
-19. 가장 효과적인 방법
+```
+GOOGLE_SHEETS_URL=https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec
+ALLOWED_ORIGIN=https://your-domain.vercel.app
+```
 
-### 행동 데이터 (6개)
-20. 각 씬 체류 시간
-21. 클릭 패턴
-22. 슬라이더 조작 횟수
-23. 뒤로가기 횟수
-24. 중도 이탈 시점
-25. 모바일/데스크톱
+### 2. 배포
+```bash
+vercel --prod
+```
 
-## 🎨 UX 최적화
+또는 GitHub 연동 시 자동 배포
 
-### 완료율 극대화 전략
-1. **Progress bar 부풀리기**: 실제보다 15-20% 높게 표시
-2. **중간 저장**: 브라우저 닫아도 이어하기 가능 (7일 유효)
-3. **모바일 최적화**: 엄지 하나로 모든 조작 가능
-4. **로딩 없음**: 모든 씬 사전 로드
-5. **사회적 증거**: 완료 인원 표시
+### 3. Google Apps Script 설정
+1. `apps-script-v2.js` 내용을 Google Apps Script에 붙여넣기
+2. `createHeaders()` 함수 실행 (헤더 생성)
+3. 배포 > 새 배포 > 웹 앱
+4. 배포 URL을 Vercel 환경 변수에 설정
 
-### 애니메이션
-- 페이드인 효과
-- 할 일 카드 쌓이기 애니메이션
-- 진행률 바 shine 효과
-- 버튼 호버 효과
+## 📊 수집 데이터
+
+### 핵심 PMF 지표
+- **Q12 가격 반응**: 4,900원에 대한 반응 (will_pay 비율 목표 > 40%)
+- **Q5 포기 이유**: "결국 내가 다 계획해야 해서" 선택률
+- **Q9 실패 원인**: "뭐부터 해야 할지 모르겠음" 선택률
+- **Q14 이메일 수집률**: 목표 > 30%
+
+### 사용자 타입 분류
+| 타입 | 설명 |
+|------|------|
+| 🌪️ 폭풍 멀티태스커 | 여러 도구, 많은 계획, 산만함 |
+| 🐌 완벽주의 미루기 | 완벽한 계획, 실행 어려움 |
+| 🎯 집중력 서바이버 | 나름의 전략, 유지 중 |
+| 🧭 방향 상실자 | 우선순위 어려움, 포기 경험 |
 
 ## 🔒 개인정보 보호
 
 - 모든 응답은 익명 처리
-- LocalStorage 사용 (서버 전송 최소화)
-- 베타 신청 시에만 이메일 수집
-- 7일 후 자동 삭제
-- 사용자 요청 시 즉시 삭제
+- 서버 사이드 API를 통한 안전한 데이터 전송
+- 베타 신청 시에만 이메일 수집 (선택)
+- LocalStorage 데이터 7일 후 자동 삭제
 
 ## 📱 반응형 디자인
 
 - 모바일 우선 설계
-- 터치 최적화
+- 터치 최적화 (엄지 영역 버튼 배치)
 - 가독성 있는 폰트 크기
-- 엄지 영역 내 버튼 배치
-
-## 🎯 다음 단계
-
-1. **백엔드 연동**: Notion API 또는 Firebase로 데이터 수집
-2. **A/B 테스트**: 다양한 문구 및 디자인 테스트
-3. **분석 대시보드**: 수집된 데이터 시각화
-4. **이메일 자동화**: 베타 테스터 초대 자동 발송
-5. **추가 씬**: 더 많은 Pain Point 발굴
-
-## 📄 라이선스
-
-MIT License
+- 부드러운 애니메이션
 
 ---
 
-## ✅ 주요 개선사항 (2024-12-16)
-
-### 🎨 UI/UX 개선
-- ✅ Flow Labs 브랜딩 추가
-- ✅ 스토리 인트로 페이지 추가 (2번째 화면)
-- ✅ 할 일 카드 시각화 개선 (모든 카드 표시)
-- ✅ 슬라이더 디자인 개선 (크로스 브라우저 호환)
-- ✅ 글씨 가독성 개선 (색상 대비 강화)
-
-### ⚡ 성능 및 사용성
-- ✅ 우선순위 결정 버튼 즉시 표시 (대기 시간 제거)
-- ✅ 포모도로 타이머 제거 (불필요한 대기 제거)
-- ✅ The Mom Test 원칙에 맞게 질문 재설계
-
-### 🔒 데이터 품질
-- ✅ 응답 신뢰도 검증 시스템 (봇 필터링, 논리 모순 탐지)
-- ✅ 중도 이탈 시 부분 데이터 저장
-- ✅ 데이터 정제 및 검증 로직
-- ✅ 신뢰도 점수 계산 (0-100)
-
-### 📊 수집 데이터 개선
-- 집중 도구 사용 패턴 (Forest, Focus To-Do 등)
-- 이탈 이유 구체화
-- 주요 방해 요소 다중 선택
-- 실제 행동 기반 질문 (과거 경험 중심)
-
----
-
-**개발**: Flow Labs
-**문의**: contact@flowlabs.com
-**© 2024 Flow Labs. All rights reserved.**
+**개발**: INTENTIO Team
+**문의**: dlgusdn06@naver.com
+**2026년 상반기 출시 예정**
