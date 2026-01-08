@@ -191,7 +191,7 @@ export const ResultPage: React.FC<ResultPageProps> = ({ data, onRestart }) => {
 
             <p className="thank-you-message">
               당신의 솔직한 이야기가<br />
-              Focus Days를 만드는 가장 큰 힘이 됩니다.
+              INTENTIO를 만드는 가장 큰 힘이 됩니다.
             </p>
 
             <p className="thank-you-message">
@@ -205,7 +205,7 @@ export const ResultPage: React.FC<ResultPageProps> = ({ data, onRestart }) => {
               <div className="reward-content">
                 <p className="reward-item">
                   <span className="reward-check">✅</span>
-                  선착순 10명: <strong>스타벅스 아메리카노 기프티콘</strong>(100% 지급)
+                  추첨을 통해 10명: <strong>스타벅스 아메리카노 기프티콘</strong>
                 </p>
                 <p className="reward-delivery">
                   → 인터뷰 완료 24시간 내 발송
